@@ -1,0 +1,52 @@
+.navbarPersonal{
+    background-color: red;
+}
+.separacionNavbar{
+    margin-top: 120px;
+}
+.mainContainer{
+    margin-top: 100px;
+}
+
+.formularioLogin{
+    color: black;
+    background-color: red;
+    border: solid;
+    padding: 10px;
+}
+
+.formularioRegister{
+    color: black;
+    background-color: red;
+    border: solid;
+    padding: 10px;
+}
+
+
+.botonNavbar{
+    margin:10px;
+}
+
+.tituloChat{
+    text-align: center;
+}
+
+.inputBotonChat{
+    display: flex;
+    justify-content: center;
+}
+
+.chatCentral{
+    max-width: 500px;
+    margin: 60px auto;
+}
+
+.footerPersonal{
+    background-color: red;
+    height: 70px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+}

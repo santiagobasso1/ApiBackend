@@ -5,7 +5,7 @@ import UserContext from '../../context/userContext';
 
 
 export const ChatPage = () => {
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [alertMessage, setAlertMessage] = useState(null);
@@ -27,7 +27,7 @@ export const ChatPage = () => {
         console.log(user)
         console.log(response)
         const data = await response.json();
-        if(data.messages) {
+        if (data.messages) {
           setMessages(data.messages);
         } else {
           setAlertMessage("Necesitas estar logeado para chatear")
@@ -52,10 +52,10 @@ export const ChatPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           first_name: user.first_name,
           email: user.email,
-          message: newMessage 
+          message: newMessage
         })
       });
 
@@ -71,15 +71,18 @@ export const ChatPage = () => {
   };
 
   return (
-    <div>
+    <div className='separacionNavbar'>
+      <h1 className='tituloChat'>Bienvenido (Nombre) al chat general!</h1>
       {alertMessage && <div className="alert alert-danger" style={{ maxWidth: '500px', margin: '2rem auto' }}>{alertMessage}</div>}
-      <div style={{ maxWidth: '500px', margin: '2rem auto' }}>
+      <div className='chatCentral'>
         {messages.map((message) => (
-            <div key={message._id}>{message.user} ({message.email}): {message.message}</div>
+          <div key={message._id}>{message.user} ({message.email}): {message.message}</div>
         ))}
       </div>
-      <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}/>
-      <button onClick={sendMessage}>Enviar</button>
+      <div className='inputBotonChat'>
+        <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+        <button onClick={sendMessage}>Enviar</button>
+      </div>
     </div>
   );
 };

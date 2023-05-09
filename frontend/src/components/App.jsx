@@ -9,13 +9,16 @@ import { ChatPage } from './Chat/Chat';
 import ItemListContainer from './ItemListContainer/ItemListContainer';
 //User Provider
 import { UserProvider } from '../context/userContext.js';
+import Navbar from './NavBar/NavBar';
+import Footer from './Footer/Footer';
+
 
 
 export const App = () => {
   return (
     <>
       <BrowserRouter>
-        Navbar
+        <Navbar/>
         <UserProvider>
           <Routes>
 
@@ -25,7 +28,7 @@ export const App = () => {
             <Route path='/products' element={<ItemListContainer />} />
             <Route path='*' element={<h1>404 Not Found</h1>} />
           </Routes>
-          Footer
+          <Footer/>
         </UserProvider>
       </BrowserRouter>
 
