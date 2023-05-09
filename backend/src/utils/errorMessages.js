@@ -24,7 +24,7 @@ export const roleVerification = (roles) => {
     return async (req, res, next) => {
         console.log(req.session.user)
         const userAccess = req.session.user
-
+        console.log(req.session);
         if (!req.session.user) {
             return res.status(401).send({ error: "User no autorizado" })
         }
