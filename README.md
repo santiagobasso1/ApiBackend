@@ -1,5 +1,5 @@
-# 👋 Segunda practica integradora
-_Arquitectura del servidor: Diseño_
+# 👋 Tercer pre-entrega TP Final
+_Desarrollo de un servidor web en capas_
 
 ## Pre Requirements 📋
 
