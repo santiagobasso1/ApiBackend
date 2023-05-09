@@ -4,14 +4,14 @@ import { io } from "../index.js";
 export const sendMessage = async (req, res) => {
     const { message } = req.body;
     try {
-        console.log(req.user)
+        console.log(req.session)
         await createNewMessage({
             nombre: req.session.user.first_name, 
             email: req.session.user.email,
             message: message
         });
+        //DESDE EL FRONT NO ME TOMA EL SESSION ACÁ
         const messages = await returnMessages();
-        console.log("Mensajes:", messages)
 
         io.emit("mensajes actualizados", messages);
 

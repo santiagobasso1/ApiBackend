@@ -19,6 +19,7 @@ export const loginUser = async (req, res, next) => {
             }
             req.session.login = true;
             req.session.user = user;
+            console.log(req.session)
             return res.status(200).send({
                 meesage: "Login exitoso",
                 user: user

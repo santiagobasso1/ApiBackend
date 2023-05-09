@@ -4,7 +4,7 @@ import { sendMessage, getMessages } from "../controllers/chatController.js";
 const routerSocket = Router();
 
 
-routerSocket.post('/chat', roleVerification(["Usuario"]), sendMessage);
-routerSocket.get('/chat', roleVerification(["Usuario","Admin"]), getMessages);
+routerSocket.post('/chat', sendMessage);
+routerSocket.get('/chat', getMessages);
 
 export default routerSocket;
