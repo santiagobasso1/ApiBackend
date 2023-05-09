@@ -1,6 +1,8 @@
-import { useRef } from "react"
-export const Login = () => {
+import { useContext,useRef } from "react"
+import UserContext from "../../context/userContext"
 
+export const Login = () => {
+    const { updateUser } = useContext(UserContext);
     const datForm = useRef()
     const consultarForm = (e) => {
         //Consultar los datos del formulario
@@ -16,9 +18,10 @@ export const Login = () => {
                   },
                   body: JSON.stringify(cliente)
                 });
-                
                 const data = await response.json();
-                console.log(data)                
+                const userData = data.user;
+                updateUser(userData)
+                console.log(updateUser)
                 document.cookie = `loguedUser=${data.user.email};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`;
                 console.log(document.cookie);
                 

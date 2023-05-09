@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
+import { useContext } from 'react';
+import UserContext from '../../context/userContext';
+
 
 export const ChatPage = () => {
+  const {user} = useContext(UserContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [alertMessage, setAlertMessage] = useState(null);
@@ -20,6 +24,7 @@ export const ChatPage = () => {
             'Content-Type': 'application/json'
           }
         });
+        console.log(user)
         console.log(response)
         const data = await response.json();
         if(data.messages) {
@@ -38,7 +43,7 @@ export const ChatPage = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [user]);
 
   const sendMessage = async () => {
     try {
@@ -48,8 +53,8 @@ export const ChatPage = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-          first_name: "santiagobasso",
-          email: "salafgw",
+          first_name: user.first_name,
+          email: user.email,
           message: newMessage 
         })
       });
@@ -66,7 +71,7 @@ export const ChatPage = () => {
   };
 
   return (
-    <div className="container mainContainer">
+    <div>
       {alertMessage && <div className="alert alert-danger" style={{ maxWidth: '500px', margin: '2rem auto' }}>{alertMessage}</div>}
       <div style={{ maxWidth: '500px', margin: '2rem auto' }}>
         {messages.map((message) => (

@@ -2,15 +2,13 @@ import { createNewMessage,returnMessages } from "../services/messageService.js";
 import { io } from "../index.js";
 
 export const sendMessage = async (req, res) => {
-    const { message } = req.body;
+    const { first_name, email, message } = req.body;
     try {
-        console.log(req.session)
         await createNewMessage({
-            nombre: req.session.user.first_name, 
-            email: req.session.user.email,
+            nombre: first_name, 
+            email: email,
             message: message
         });
-        //DESDE EL FRONT NO ME TOMA EL SESSION ACÁ
         const messages = await returnMessages();
 
         io.emit("mensajes actualizados", messages);
