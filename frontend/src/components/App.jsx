@@ -11,7 +11,7 @@ import ItemListContainer from './ItemListContainer/ItemListContainer';
 import { UserProvider } from '../context/userContext.js';
 import Navbar from './NavBar/NavBar';
 import Footer from './Footer/Footer';
-
+import PaginaInicial from './PaginaInicial/PaginaInicial';
 
 
 export const App = () => {
@@ -21,6 +21,7 @@ export const App = () => {
         <Navbar/>
         <UserProvider>
           <Routes>
+            <Route path='/' element={<PaginaInicial />} />
 
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />

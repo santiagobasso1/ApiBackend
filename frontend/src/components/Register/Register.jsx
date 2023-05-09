@@ -25,7 +25,7 @@ export const Register = () => {
                 console.log(data)                
                 document.cookie = `loguedUser=${data.user.email};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`;
                 console.log(document.cookie);
-                window.location.href = "/products"
+                window.location.href = "/login"
 
                 
               } catch (error) {

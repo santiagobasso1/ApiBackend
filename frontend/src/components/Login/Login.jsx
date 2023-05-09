@@ -4,6 +4,7 @@ import UserContext from "../../context/userContext"
 export const Login = () => {
     const { updateUser } = useContext(UserContext);
     const datForm = useRef()
+
     const consultarForm = (e) => {
         //Consultar los datos del formulario
         e.preventDefault()
@@ -18,13 +19,18 @@ export const Login = () => {
                   },
                   body: JSON.stringify(cliente)
                 });
-                const data = await response.json();
-                const userData = data.user;
-                updateUser(userData)
-                console.log(updateUser)
-                document.cookie = `loguedUser=${data.user.email};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`;
-                console.log(document.cookie);
-                window.location.href = "/products"
+                if (response.status===200){
+                    const data = await response.json();
+                    const userData = data.user;
+                    updateUser(userData)
+                    console.log(updateUser)
+                    document.cookie = `loguedUser=${data.user.email};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`;
+                    console.log(document.cookie);
+                    window.location.href = "/chat"
+                }else{
+                    console.log("Error en tus credenciales");
+                }
+
               } catch (error) {
                 console.error(error);
               }
@@ -50,7 +56,6 @@ export const Login = () => {
                     <label htmlFor="password" className="form-label">Contraseña</label>
                     <input type="password" className="form-control" name="password" />
                 </div>
-
                 <button type="submit" className="btn btn-primary">Iniciar Sesion</button>
             </form>
             </div>
