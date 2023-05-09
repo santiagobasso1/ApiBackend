@@ -11,18 +11,40 @@ export const Register = () => {
         const datosFormulario = new FormData(datForm.current) //Pasar de HTML a Objeto Iterable
         const cliente = Object.fromEntries(datosFormulario) //Pasar de objeto iterable a objeto simple
         console.log(cliente)
-        fetch('http://localhost:4000/auth/register', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(cliente)
-        }).then(response => response.json())
-            .then(data => {
-                document.cookie = `token=${data.token};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`
-                console.log(data.token)
-            })
-            .catch(error => console.error(error))
+        const register = async()=>{
+            try {
+                const response = await fetch('http://localhost:4000/auth/register', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(cliente)
+                });
+                
+                const data = await response.json();
+                console.log(data)                
+                document.cookie = `loguedUser=${data.user.email};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`;
+                console.log(document.cookie);
+                
+              } catch (error) {
+                console.error(error);
+              }
+              
+              e.target.reset(); //Reset form
+        }
+        register();
+        // fetch('http://localhost:4000/auth/register', {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify(cliente)
+        // }).then(response => response.json())
+        //     .then(data => {
+        //         document.cookie = `token=${data.token};expires=${new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toUTCString()};path=/`
+        //         console.log(data.token)
+        //     })
+        //     .catch(error => console.error(error))
             
         e.target.reset() //Reset form
     }

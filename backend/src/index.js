@@ -5,22 +5,25 @@ import mongoose from 'mongoose'
 import MongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
-import {initializePassport} from './config/passport.js'
+import { initializePassport } from './config/passport.js'
 import cors from 'cors'
 import routerIndex from './routes/index.routes.js';
 import { Server } from "socket.io";
- 
+
 const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 //CORS (Me da problemas por eso comentado)
-// const corsOptions = { //Reviso si el cliente que intenta ingresar a mi servidor esta o no en esta lista
-//     origin: (origin, callback) => {
-//         if (whiteList.indexOf(origin) !== -1) {
-//             callback(null, true)
-//         } else {
-//             callback(new Error('Not allowed by Cors'))
-//         }
-//     }
-// }
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (whiteList.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    // Agrega el encabezado Access-Control-Allow-Origin en todas las respuestas
+    exposedHeaders: 'Access-Control-Allow-Origin'
+}
+
 
 //Iniciar Server
 const app = express()
@@ -28,7 +31,7 @@ const app = express()
 //MIDDLEWARES
 app.use(cookieParser(process.env.SIGNED_COOKIE))
 app.use(express.json())
-// app.use(cors(corsOptions))
+app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
     store: MongoStore.create({
@@ -61,7 +64,7 @@ connectionMongoose()
 app.use(cookieParser(process.env.JWT_SECRET))
 
 
-app.use("/",routerIndex)
+app.use("/", routerIndex)
 
 
 const server = app.listen(4000, () => {
