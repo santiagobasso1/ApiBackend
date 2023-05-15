@@ -2,6 +2,10 @@ import { createUser, findUserByEmail } from "../services/UserService.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import { validatePassword, createHash } from "../utils/bcrypt.js";
+import { CustomError } from "../utils/errors/customErrors.js";
+import { generateUserErrorInfo } from "../utils/errors/errorInfo.js";
+import { ErrorEnum } from "../utils/errors/errorEnum.js";
+
 export const loginUser = async (req, res, next) => {
     try {
         passport.authenticate('login', (err, user) => {
@@ -10,8 +14,10 @@ export const loginUser = async (req, res, next) => {
                     message: "Ha ocurrido un error durante el login",
                     error: err.message
                 })
+
             }
             if (!user) {
+
                 return res.status(401).send({
                     message:"Usuario o contraseña no validos",
                     user: user

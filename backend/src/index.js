@@ -9,6 +9,10 @@ import { initializePassport } from './config/passport.js'
 import cors from 'cors'
 import routerIndex from './routes/index.routes.js';
 import { Server } from "socket.io";
+import compression from 'express-compression'
+import errorHandler from './middleware/errors/errorHandler.js';
+import {CustomError} from './utils/errors/customErrors.js';
+import { generateUserErrorInfo } from './utils/errors/errorInfo.js';
 
 const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 //CORS (Me da problemas por eso comentado)
@@ -49,6 +53,11 @@ initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
+//Compression
+app.use(compression({
+    brotli: { enabled: true, zlib: {} }
+}))
+
 
 //Mongoose
 const connectionMongoose = async () => {
@@ -65,7 +74,8 @@ app.use(cookieParser(process.env.JWT_SECRET))
 
 
 app.use("/", routerIndex)
-
+//Error Handler
+// app.use(errorHandler)
 
 const server = app.listen(4000, () => {
     console.log(`Server on port 4000`)
@@ -81,4 +91,4 @@ export const io = new Server(server, {
         preflightContinue: false,
         maxAge: 3600,
     },
-}); 
+});

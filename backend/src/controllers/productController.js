@@ -1,38 +1,55 @@
 import { findProductById, insertProducts, updateOneProduct, paginateProducts, deleteOneProduct } from "../services/productService.js";
+import { CustomError } from '../utils/errors/customErrors.js';
+import { ErrorEnum } from "../utils/errors/errorEnum.js";
 
-export const getProducts = async (req, res) => {
-    const { limit = 10, page = 1, sort = "", category = "" } = req.query;
+export const getProducts = async (req, res, next) => {
+    try { 
+        if (true) {
+            CustomError.createError({
+                name: "probando",
+                message: "Probando",
+                cause: "probando",
+                code: ErrorEnum.ROUTING_ERROR
+            })
+        }
 
-    const filters = { stock: { $gt: 0 } };
-    if (category) filters.category = category;
+        const { limit = 10, page = 1, sort = "", category = "" } = req.query;
 
-    const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-    };
-    if (sort) options.sort = { price: sort === 'desc' ? -1 : 1 }
+        const filters = { stock: { $gt: 0 } };
+        if (category) filters.category = category;
 
-    try {
-        const products = await paginateProducts(filters, options);
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+        };
+        if (sort) options.sort = { price: sort === 'desc' ? -1 : 1 }
 
-        const prevLink = products.hasPrevPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.prevPage}` : null
-        const nextLink = products.hasNextPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.nextPage}` : null
+        try {
+            const products = await paginateProducts(filters, options);
 
-        return res.status(200).json({
-            status: "success",
-            payload: products.docs,
-            totalPages: products.totalPages,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            page: products.page,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.hasNextPage,
-            prevLink: prevLink,
-            nextLink: nextLink
-        })
-    } catch (error) {
-        res.status(500).send({error: error.message})
+            const prevLink = products.hasPrevPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.prevPage}` : null
+            const nextLink = products.hasNextPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.nextPage}` : null
+
+            return res.status(200).json({
+                status: "success",
+                payload: products.docs,
+                totalPages: products.totalPages,
+                prevPage: products.prevPage,
+                nextPage: products.nextPage,
+                page: products.page,
+                hasPrevPage: products.hasPrevPage,
+                hasNextPage: products.hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            })
+        } catch (error) {
+            res.status(500).send({ error: error.message })
+        }
     }
+    catch (error) {
+        next(error)
+    }
+
 }
 
 export const getProduct = async (req, res) => {
@@ -43,10 +60,9 @@ export const getProduct = async (req, res) => {
         return res.status(200).json(product)
 
     } catch (error) {
-        console.log()
         res.status(500).send({
-          message: "Error al buscar el producto",
-          error: error.message
+            message: "Error al buscar el producto",
+            error: error.message
         });
     }
 }
@@ -54,11 +70,11 @@ export const getProduct = async (req, res) => {
 export const addProducts = async (req, res) => {
     console.log(req.body)
     const info = req.body;
-    
+
     try {
         const products = await insertProducts(info);
         res.status(200).send({
-            message: 'Productos agregados correctamente', 
+            message: 'Productos agregados correctamente',
             products: products
         });
 
