@@ -1,54 +1,45 @@
 import { findProductById, insertProducts, updateOneProduct, paginateProducts, deleteOneProduct } from "../services/productService.js";
 import { CustomError } from '../utils/errors/customErrors.js';
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
-
+import { generateAddProductErrorInfo } from "../utils/errors/errorInfo.js";
 export const getProducts = async (req, res, next) => {
-    try { 
-        if (true) {
-            CustomError.createError({
-                name: "probando",
-                message: "Probando",
-                cause: "probando",
-                code: ErrorEnum.ROUTING_ERROR
-            })
-        }
 
-        const { limit = 10, page = 1, sort = "", category = "" } = req.query;
 
-        const filters = { stock: { $gt: 0 } };
-        if (category) filters.category = category;
 
-        const options = {
-            page: parseInt(page),
-            limit: parseInt(limit),
-        };
-        if (sort) options.sort = { price: sort === 'desc' ? -1 : 1 }
+    const { limit = 10, page = 1, sort = "", category = "" } = req.query;
 
-        try {
-            const products = await paginateProducts(filters, options);
+    const filters = { stock: { $gt: 0 } };
+    if (category) filters.category = category;
 
-            const prevLink = products.hasPrevPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.prevPage}` : null
-            const nextLink = products.hasNextPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.nextPage}` : null
+    const options = {
+        page: parseInt(page),
+        limit: parseInt(limit),
+    };
+    if (sort) options.sort = { price: sort === 'desc' ? -1 : 1 }
 
-            return res.status(200).json({
-                status: "success",
-                payload: products.docs,
-                totalPages: products.totalPages,
-                prevPage: products.prevPage,
-                nextPage: products.nextPage,
-                page: products.page,
-                hasPrevPage: products.hasPrevPage,
-                hasNextPage: products.hasNextPage,
-                prevLink: prevLink,
-                nextLink: nextLink
-            })
-        } catch (error) {
-            res.status(500).send({ error: error.message })
-        }
+    try {
+        const products = await paginateProducts(filters, options);
+
+        const prevLink = products.hasPrevPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.prevPage}` : null
+        const nextLink = products.hasNextPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.nextPage}` : null
+
+        return res.status(200).json({
+            status: "success",
+            payload: products.docs,
+            totalPages: products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            page: products.page,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink
+        })
+    } catch (error) {
+        res.status(500).send({ error: error.message })
     }
-    catch (error) {
-        next(error)
-    }
+
+
 
 }
 
@@ -67,21 +58,41 @@ export const getProduct = async (req, res) => {
     }
 }
 
-export const addProducts = async (req, res) => {
+export const addProducts = async (req, res, next) => {
     console.log(req.body)
     const info = req.body;
-
     try {
-        const products = await insertProducts(info);
-        res.status(200).send({
-            message: 'Productos agregados correctamente',
-            products: products
-        });
+        if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) {
+            CustomError.createError({
+                name: "Add products error",
+                message: "missing fields",
+                cause: generateAddProductErrorInfo({
+                    title:info.title, 
+                    description:info.descripcion, 
+                    code: info.code,
+                    price: info.price,
+                    stock: info.stock,
+                    thumbnails: info.thumbnails
+                }),
+                code: ErrorEnum.MISSING_FIELDS
+            })
+        }
 
-    } catch (error) {
-        res.status(500).send({
-            error: error.message
-        });
+        try {
+            const products = await insertProducts(info);
+            res.status(200).send({
+                message: 'Productos agregados correctamente',
+                products: products
+            });
+
+        } catch (error) {
+            res.status(500).send({
+                error: error.message
+            });
+        }
+    }
+    catch (error) {
+        next(error)
     }
 }
 

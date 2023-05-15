@@ -75,7 +75,7 @@ app.use(cookieParser(process.env.JWT_SECRET))
 
 app.use("/", routerIndex)
 //Error Handler
-// app.use(errorHandler)
+app.use(errorHandler)
 
 const server = app.listen(4000, () => {
     console.log(`Server on port 4000`)
