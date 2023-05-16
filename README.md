@@ -1,5 +1,5 @@
-# 👋 Tercer pre-entrega TP Final
-_Desarrollo de un servidor web en capas_
+# 👋 Mocking y manejo de errores
+_Desarrollo de falsos productos con faker y customErrors para personalizar los errores_
 
 ## Pre Requirements 📋
 
@@ -7,8 +7,14 @@ _Para utilizar la aplicación necesita instalar las dependencias con el siguient
 ```
 npm i
 ```
-## Rutas de la API a testear
+# Rutas de la API a testear
 
+## NUEVA
+
+###
+```
+http://localhost:4000/mocking/mockingproducts [ADMIN] [USER]
+```
 ### Products: 
 ```
 http://localhost:4000/api/product [GET] [ADMIN]
