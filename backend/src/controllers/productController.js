@@ -62,34 +62,38 @@ export const addProducts = async (req, res, next) => {
     console.log(req.body)
     const info = req.body;
     try {
-        if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) {
+        if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) 
+        {
             CustomError.createError({
                 name: "Add products error",
                 message: "missing fields",
                 cause: generateAddProductErrorInfo({
-                    title:info.title, 
-                    description:info.descripcion, 
+                    title: info.title,
+                    description: info.description,
                     code: info.code,
                     price: info.price,
                     stock: info.stock,
+                    category: info.category,
                     thumbnails: info.thumbnails
                 }),
                 code: ErrorEnum.MISSING_FIELDS
             })
+        }else{
+            try {
+                const products = await insertProducts(info);
+                res.status(200).send({
+                    message: 'Productos agregados correctamente',
+                    products: products
+                });
+    
+            } catch (error) {
+                res.status(500).send({
+                    error: error.message
+                });
+            }
         }
 
-        try {
-            const products = await insertProducts(info);
-            res.status(200).send({
-                message: 'Productos agregados correctamente',
-                products: products
-            });
-
-        } catch (error) {
-            res.status(500).send({
-                error: error.message
-            });
-        }
+        
     }
     catch (error) {
         next(error)

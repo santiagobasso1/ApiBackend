@@ -12,7 +12,6 @@ import { Server } from "socket.io";
 import compression from 'express-compression'
 import errorHandler from './middleware/errors/errorHandler.js';
 import {CustomError} from './utils/errors/customErrors.js';
-import { generateUserErrorInfo } from './utils/errors/errorInfo.js';
 
 const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 //CORS (Me da problemas por eso comentado)

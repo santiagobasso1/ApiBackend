@@ -3,7 +3,6 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import { validatePassword, createHash } from "../utils/bcrypt.js";
 import { CustomError } from "../utils/errors/customErrors.js";
-import { generateUserErrorInfo } from "../utils/errors/errorInfo.js";
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 
 export const loginUser = async (req, res, next) => {
