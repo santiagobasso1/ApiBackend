@@ -11,9 +11,9 @@ npm i
 
 ## 👇👇NUEVA👇👇
 
-###
+### Mocking
 ```
-![#f03c15]http://localhost:4000/mocking/mockingproducts `#f03c15` [ADMIN] [USER]
+http://localhost:4000/mocking/mockingproducts
 ```
 ### Products: 
 ```
