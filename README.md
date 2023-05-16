@@ -9,11 +9,11 @@ npm i
 ```
 # Rutas de la API a testear
 
-## NUEVA
+## 👇👇NUEVA👇👇
 
 ###
 ```
-http://localhost:4000/mocking/mockingproducts [ADMIN] [USER]
+![#f03c15]http://localhost:4000/mocking/mockingproducts `#f03c15` [ADMIN] [USER]
 ```
 ### Products: 
 ```
