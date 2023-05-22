@@ -17,7 +17,6 @@ const customLevelOpt = {
         debug: 'blue'
     }
 }
-winston.remove(winston.transports.Console);
 
 const logger = winston.createLogger({
     levels: customLevelOpt.levels, 
