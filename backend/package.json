@@ -5,9 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "dev:development": "nodemon src/index.js --mode DEVELOPMENT",
-    "dev:production": "nodemon src/index.js --mode PRODUCTION"
+    "run:dev": "copy .env.development .env && nodemon src/index.js",
+    "run:prod": "copy .env.production .env && nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
