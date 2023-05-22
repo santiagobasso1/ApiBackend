@@ -33,7 +33,7 @@ const prodLogger = winston.createLogger({
         new winston.transports.Console({ level: 'info' }),
         new winston.transports.File({
             filename: logFileName,
-            level: 'warning'  //Se mostrarán los que sean mas que warning incluyendolo, al tener 1 solo transport file no escribe varias veces
+            level: 'error'  //Se mostrarán los que sean mas que warning incluyendolo, al tener 1 solo transport file no escribe varias veces
         })
     ]
 })
