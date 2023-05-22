@@ -29,7 +29,8 @@ export const initializePassport = () => {
                     password: hashPassword,
                     idCart: cart._id
                 })
-                console.log(newUser)
+                req.logger.info("New user created: "+newUser)
+                // console.log(newUser)
                 return done(null, newUser);
             } catch (error) {
                 return done(error);

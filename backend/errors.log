@@ -1,0 +1,5 @@
+fatal: User not allowed
+fatal: User not allowed
+fatal: User not allowed
+fatal: User not allowed
+fatal: Fatal error: MongoBulkWriteError: E11000 duplicate key error collection: test.products index: code_1 dup key: { code: "awodjaowdasc" }

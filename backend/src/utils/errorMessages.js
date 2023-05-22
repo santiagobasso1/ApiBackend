@@ -22,14 +22,11 @@ export const roleVerification = (roles) => {
     let bandera = 0
 
     return async (req, res, next) => {
-        console.log(req.session.user)
         const userAccess = req.session.user
-        console.log(req.session);
         if (!req.session.user) {
+            req.logger.fatal("User not allowed")
             return res.status(401).send({ error: "User no autorizado" })
         }
-
-        console.log(userAccess)
         roles.forEach(rolEnviado => {
             if (userAccess.rol != rolEnviado) { //El user no tiene el rol necesario a esta ruta y a este rol
                 bandera = 1

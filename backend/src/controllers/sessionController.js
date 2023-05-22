@@ -32,6 +32,7 @@ export const loginUser = async (req, res, next) => {
         })(req, res, next)
 
     } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor", 
             error: error.message
@@ -109,6 +110,7 @@ export const registerUser = async (req, res, next) => {
         })(req, res, next)
 
     } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor", 
             error: error.message
@@ -126,6 +128,7 @@ export const destroySession = async (req, res) => {
             return res.status(401).send("No existe sesion activa")
         }
     } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor", 
             error: error.message
@@ -136,12 +139,13 @@ export const destroySession = async (req, res) => {
 export const getSession = async (req, res) => {
     try {
         if (req.session.login) {
-            console.log(req.session.user)
+            req.logger.info("GetSessionUser: "+req.session.user)
             res.status(200).json({ response: req.session.user });
         } else {
             return res.status(401).send("No existe sesion activa")
         }
     } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor", 
             error: error.message

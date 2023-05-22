@@ -20,6 +20,7 @@ export const getCart = async (req, res) => {
             res.status(200).json({ cartPopulate });
 
         } catch (error) {
+            req.logger.fatal("Fatal error/Server connection")
             res.status(500).send({
                 message: "Hubo un error en el servidor", 
                 error: error.message
@@ -27,6 +28,7 @@ export const getCart = async (req, res) => {
         }
 
     } else {
+        req.logger.error("Session not found")
         return res.status(401).send("No existe sesion activa")
     }
 }
@@ -38,9 +40,11 @@ export const updateCartProducts = async (req, res) => {
 
         try {
             const products = await updateCart(idCart, { products: info });
+            req.logger.info("Cart updated")
             return res.status(200).send("Carrito actualizado")
 
         } catch (error) {
+            req.logger.fatal("Fatal error/Server connection")
             res.status(500).send({
                 message: "Hubo un error en el servidor", 
                 error: error.message
@@ -48,6 +52,7 @@ export const updateCartProducts = async (req, res) => {
         }
 
     } else {
+        req.logger.error("Session not found")
         return res.status(401).send("No existe sesion activa")
     }
 }
@@ -69,23 +74,22 @@ export const addProductToCart = async (req, res, next) => {
             }else{
                 try {
                     const realProduct = await findProductById(idProduct);
-                    console.log(realProduct)
                     if (realProduct) {
                         const cart = await findCartById(idCart);
-                        console.log(cart)
                         const productIndex = cart.products.findIndex(product => product.productId == idProduct);
                         if (productIndex === -1) {
                             cart.products.push({ productId: idProduct });
                         } else {
                             cart.products[productIndex].quantity += 1;
                         }
-                        console.log(cart)
         
                         await cart.save();
+                        req.logger.info("New Product in the cart, id:"+idProduct)
                         return res.status(200).send("Producto agregado al carrito")
                     }
         
                 } catch (error) {
+                    req.logger.fatal("Fatal error/Server connection")
                     res.status(500).send({
                         message: "Hubo un error en el servidor", 
                         error: error.message
@@ -123,6 +127,7 @@ export const updateProductQuantity = async (req, res) => {
             return res.status(200).send("Cantidad del producto actualizada")
 
         } catch (error) {
+            req.logger.fatal("Fatal error/Server connection")
             res.status(500).send({
                 message: "Hubo un error en el servidor", 
                 error: error.message
@@ -143,6 +148,7 @@ export const deleteAllProductsFromCart = async (req, res) => {
             return res.status(200).send("Productos borrados")
 
         } catch (error) {
+            req.logger.fatal("Fatal error/Server connection")
             res.status(500).send({
                 message: "Hubo un error en el servidor", 
                 error: error.message
@@ -173,6 +179,7 @@ export const deleteOneProductFromCart = async (req, res) => {
 
 
         } catch (error) {
+            req.logger.fatal("Fatal error/Server connection")
             res.status(500).send({
                 message: "Hubo un error en el servidor", 
                 error: error.message

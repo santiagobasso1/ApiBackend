@@ -18,7 +18,8 @@ export const sendMessage = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message)
+        req.logger.fatal("Fatal error/Server connection")
+        //console.log(error.message)
         res.status(500).send({
             message: "Hubo un error en el servidor",
             error: error.message
@@ -29,13 +30,13 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
     try {
         const messages = await returnMessages();
-        console.log(messages)
 
         res.status(200).json({ 
             messages: messages
         });
 
     } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor",
             error: error.message

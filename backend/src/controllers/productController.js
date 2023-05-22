@@ -36,6 +36,7 @@ export const getProducts = async (req, res, next) => {
             nextLink: nextLink
         })
     } catch (error) {
+        req.logger.fatal("Fatal error: "+error.message)
         res.status(500).send({ error: error.message })
     }
 
@@ -51,6 +52,7 @@ export const getProduct = async (req, res) => {
         return res.status(200).json(product)
 
     } catch (error) {
+        req.logger.fatal("Fatal error looking for the product")
         res.status(500).send({
             message: "Error al buscar el producto",
             error: error.message
@@ -59,7 +61,6 @@ export const getProduct = async (req, res) => {
 }
 
 export const addProducts = async (req, res, next) => {
-    console.log(req.body)
     const info = req.body;
     try {
         if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) 
@@ -78,6 +79,7 @@ export const addProducts = async (req, res, next) => {
                 }),
                 code: ErrorEnum.MISSING_FIELDS
             })
+            req.logger.fatal("Missing fields, product:"+info)
         }else{
             try {
                 const products = await insertProducts(info);
@@ -87,6 +89,7 @@ export const addProducts = async (req, res, next) => {
                 });
     
             } catch (error) {
+                req.logger.fatal("Fatal error: "+error.message)
                 res.status(500).send({
                     error: error.message
                 });
@@ -118,6 +121,7 @@ export const updateProduct = async (req, res) => {
         });
 
     } catch (error) {
+        req.logger.fatal("Fatal error: "+error.message)
         res.status(500).send({
             error: error.message
         });
@@ -141,6 +145,7 @@ export const deleteProduct = async (req, res) => {
         });
 
     } catch (error) {
+        req.logger.fatal("Fatal error: "+error.message)
         res.status(500).send({
             error: error.message
         });

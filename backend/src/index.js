@@ -73,7 +73,7 @@ app.use(cookieParser(process.env.JWT_SECRET))
 //Logger
 app.use(addLogger)
 //Error Handler
-app.use(errorHandler)
+// app.use(errorHandler)
 
 app.use("/", routerIndex)
 

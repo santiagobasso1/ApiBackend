@@ -6,6 +6,7 @@ export const getUsers = async (req, res) => {
         res.status(200).send(users)
 
     } catch (error) {
+        req.logger.fatal("Fatal error: "+error)
         res.status(500).send(error)
     }
 
