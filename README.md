@@ -1,5 +1,5 @@
-# 👋 Mocking y manejo de errores
-_Desarrollo de falsos productos con faker y customErrors para personalizar los errores_
+# 👋 Logger y performance
+_Eliminación de la mayoria de los console.log reemplazandolos por logs_
 
 ## Pre Requirements 📋
 
@@ -10,7 +10,13 @@ npm i
 # Rutas de la API a testear
 
 ## 👇👇NUEVA👇👇
-
+### Logger
+```
+http://localhost:4000/loggerTest/fatal [GET] [ADMIN USER]
+http://localhost:4000/loggerTest/error [GET] [ADMIN USER]
+http://localhost:4000/loggerTest/warning [GET] [ADMIN USER]
+http://localhost:4000/loggerTest/debug [GET] [ADMIN USER]
+```
 ### Mocking
 ```
 http://localhost:4000/mocking/mockingproducts
@@ -25,7 +31,7 @@ http://localhost:4000/api/product/:pid [DELETE] [ADMIN]
 ```
 ### Cart:
 ```
-http://localhost:4000/api/cart [GET] [ADMIN USER]
+http://localhost:4000/api/cart [GET] [ADMIN] [USER]
 http://localhost:4000/api/cart/:cid [PUT] [USER]
 http://localhost:4000/api/cart/product/:pid [POST] [USER]
 http://localhost:4000/api/cart/product/:pid [PUT] [USER]

@@ -16,7 +16,7 @@ routerLogger.get("/warning",(req,res)=>{
 })
 
 routerLogger.get("/debug",(req,res)=>{
-    req.logger.debug('Esto es informacion del Debug, todo funciona correctamente').
+    req.logger.debug('Esto es informacion del Debug, todo funciona correctamente')
     res.send("Debug!")
 })
 
