@@ -20,7 +20,7 @@ btnLogin.addEventListener('click', async (e) => {
             },
             body: JSON.stringify(cliente)
         });
-
+        
         if (!response.ok) {
             throw new Error('Error en la solicitud');
         }

@@ -59,7 +59,9 @@ http://localhost:4000/auth/githubSession [GET]
 http://localhost:4000/auth/login [POST]
 http://localhost:4000/auth/register [POST]
 http://localhost:4000/auth/logout [GET]
-http://localhost:4000/auth/current [GET] 
+http://localhost:4000/auth/current [GET]
+http://localhost:4000/auth/password/createLink [POST]
+http://localhost:4000/auth/password/reset [POST]
 ```
 ### User:
 ```

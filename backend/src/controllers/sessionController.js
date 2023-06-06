@@ -171,14 +171,14 @@ export const getSessionObject = async (req, res) => {
 }
 
 
-export const sendResetPasswordLink = async (req, res, next) => {
+export const sendResetPasswordLink = async (req, res) => {
     const { email } = req.body
 
     try {
         const user = await findUserByEmail(email)
         if (!user) {
-            res.status(404).send('Email not found in database')
-            next()
+            return res.status(404).send({message:'Email not found in database'})
+
         }
         if (user) {
             const resetLink = await generatePasswordResetLink(user, req, res)
@@ -212,6 +212,9 @@ export const sendResetPasswordLink = async (req, res, next) => {
 
 export const resetPassword = async (req, res, next) => {
     const email = req.signedCookies.tokenEmail
+    if (!email){
+        return res.status(404).send({message:'Email not found or password reset link expired, redirecting'})
+    }
     const { password, confirmPassword } = req.body
     console.log(email)
     try {
@@ -219,29 +222,26 @@ export const resetPassword = async (req, res, next) => {
         console.log(browserCookie)
         const user = await findUserByEmail(email)
 
+
+        //Está este control pero no es necesario ya que reviso antes que el usuario exista, por un caso muy raro como si lo borraran en ese tiempo entre que pidió el link y hizo el recovery
         if (!user) {
-            res.status(404).send('Email not found')
-            return
+            return res.status(404).send({message:'Email not found, redirecting'})
         }
 
         if (!browserCookie || isTokenExpired(browserCookie, user.resetToken)) {
-            res.status(401).send('Password reset link expired')
-            return
+            return res.status(401).send({message:'Password reset link expired'})
         }
 
         if (user.resetToken.token !== browserCookie) {
-            res.status(401).send('Unauthorized action')
-            return
+            return res.status(401).send({message:'Unauthorized action'})
         }
 
         if (password !== confirmPassword) {
-            res.status(400).send('Both password fields must match')
-            return
+            return res.status(400).send({message:'Both password fields must match'})
         }
 
         if (await validatePassword(password, user.password)) {
-            res.status(400).send('New password must be different from the current one')
-            return
+            return res.status(400).send({message:'New password must be different from the current one'})
         }
 
         // * Requirements passed, now we change the password
@@ -250,7 +250,7 @@ export const resetPassword = async (req, res, next) => {
             password: newPassword,
             resetToken: { token: '' }
         })
-        res.status(200).send('Password updated. Redirecting to login.')
+        res.status(200).send({message:'Password updated. Redirecting to login.'})
 
     } catch (error) {
         res.status(500).send({
@@ -274,7 +274,7 @@ async function generatePasswordResetLink(user, req, res) {
 
     res.cookie('resetToken', token, {
         signed: true,
-        maxAge: 1000 * 60 * 60
+        maxAge: 1000 * 60 * 60 
     })
     //Generamos un email que dure lo mismo que el token para no tener que pedirselo al usuario
     res.cookie('tokenEmail', user.email, {

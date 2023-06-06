@@ -18,6 +18,7 @@ restorePasswordForm.addEventListener('submit', async (e) => {
       });
 
       if (response.ok) {
+        const responseData = await response.json();
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -28,7 +29,16 @@ restorePasswordForm.addEventListener('submit', async (e) => {
           window.location.href = 'http://localhost:4000/handlebars/login';
         });
       } else {
-        throw new Error('Error en la solicitud');
+        const errorData = await response.json();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: errorData.message,
+          showConfirmButton: false,
+          timer: 1500
+        }).then(()=>{
+          window.location.href = 'http://localhost:4000/handlebars/emailForm';
+        })
       }
     } catch (error) {
       Swal.fire({

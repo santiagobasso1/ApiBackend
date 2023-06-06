@@ -14,9 +14,9 @@ sendMailForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ email: email }),
     });
 
-    if (!response.ok) {
-      throw new Error('Error en la solicitud');
-    }
+    // if (!response.ok) {
+    //   throw new Error('Error en la solicitud');
+    // }
 
     if (response.ok){
       Swal.fire({
@@ -26,9 +26,18 @@ sendMailForm.addEventListener('submit', async (e) => {
         showConfirmButton: false,
         timer: 1500
       })
+    }else{
+      const errorData = await response.json();
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: errorData.message,
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
-    const data = await response.json();
-    console.log(data);
+    // const data = await response.json();
+    // console.log(data);
     
   } catch (error) {
     Swal.fire({
