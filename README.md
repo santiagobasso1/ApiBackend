@@ -1,4 +1,4 @@
-# 👋 Logger y performance
+# 👋 Restore Password || Tercer practica integradora
 _Eliminación de la mayoria de los console.log reemplazandolos por logs_
 
 ## Pre Requirements 📋
