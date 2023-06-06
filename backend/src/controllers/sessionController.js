@@ -155,6 +155,21 @@ export const getSession = async (req, res) => {
     }
 }
 
+export const getSessionObject = async (req, res) => {
+    try {
+        if (req.session.login) {
+            req.logger.info("GetSessionUser: " + req.session.user)
+            const user = req.session.user
+            return user
+        } else {
+            return res.status(401).send("No existe sesion activa")
+        }
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
+        return error
+    }
+}
+
 
 export const sendResetPasswordLink = async (req, res, next) => {
     const { email } = req.body

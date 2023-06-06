@@ -34,7 +34,13 @@ const productSchema = new Schema({
     thumbnails: {
         type: Array,
         default: []
-    }
+    },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'Users',
+        required: true,
+        default: "admin"
+    },
 })
 
 productSchema.plugin(paginate)

@@ -2,10 +2,8 @@ import { findProductById, insertProducts, updateOneProduct, paginateProducts, de
 import { CustomError } from '../utils/errors/customErrors.js';
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 import { generateAddProductErrorInfo } from "../utils/errors/errorInfo.js";
+import { getSessionObject } from "./sessionController.js";
 export const getProducts = async (req, res, next) => {
-
-
-
     const { limit = 10, page = 1, sort = "", category = "" } = req.query;
 
     const filters = { stock: { $gt: 0 } };
@@ -61,6 +59,8 @@ export const getProduct = async (req, res) => {
 }
 
 export const addProducts = async (req, res, next) => {
+    //EL control de si el usuario es premium o no se realiza antes, en el middleware de roleVerification
+    const user = await getSessionObject(req,res);
     const info = req.body;
     try {
         if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) 
@@ -75,13 +75,17 @@ export const addProducts = async (req, res, next) => {
                     price: info.price,
                     stock: info.stock,
                     category: info.category,
-                    thumbnails: info.thumbnails
+                    thumbnails: info.thumbnails,
                 }),
                 code: ErrorEnum.MISSING_FIELDS
             })
             req.logger.fatal("Missing fields, product:"+info)
         }else{
             try {
+                if (user){
+                    info.owner = user._id
+                }
+                console.log(info)
                 const products = await insertProducts(info);
                 res.status(200).send({
                     message: 'Productos agregados correctamente',
