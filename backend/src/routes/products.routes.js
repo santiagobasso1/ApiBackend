@@ -6,8 +6,8 @@ const routerProduct = Router();
 
 routerProduct.get('/',getProducts); //Este se saca en caso de querer ver los products por el front
 routerProduct.get('/:pid', getProduct);
-routerProduct.post('/',roleVerification(["Premium","Admin"]), addProducts);// Por esta entrega solo el "Premium" puede generar productos
-routerProduct.put('/:pid',roleVerification(["Admin"]), updateProduct);
+routerProduct.post('/',roleVerification(["Admin","Premium"]), addProducts);// Por esta entrega solo el "Premium" puede generar productos
+routerProduct.put('/:pid',roleVerification(["Admin","Premium"]), updateProduct);
 routerProduct.delete('/:pid',roleVerification(["Admin","Premium"]), deleteProduct); //Solo al admin se le permite realizar esto.
 
 export default routerProduct

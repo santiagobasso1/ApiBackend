@@ -10,6 +10,16 @@ npm i
 # Rutas de la API a testear
 
 ## 👇👇NUEVA👇👇
+### Handlebars (Ya que con react no vimos como guardar cookies)
+### VISTAS
+```
+http://localhost:4000/handlebars/login [GET] [ADMIN USER]
+http://localhost:4000/handlebars/restorePassword [GET] [ADMIN USER]
+http://localhost:4000/handlebars/login [GET] [ADMIN USER]
+http://localhost:4000/handlebars/register [GET] [ADMIN USER]
+http://localhost:4000/handlebars/ [GET] [ADMIN USER]
+
+```
 ### Logger
 ```
 http://localhost:4000/loggerTest/fatal [GET] [ADMIN USER]
@@ -23,11 +33,11 @@ http://localhost:4000/mocking/mockingproducts
 ```
 ### Products: 
 ```
-http://localhost:4000/api/product [GET] [ADMIN]
-http://localhost:4000/api/product/:pid [GET] [ADMIN]
-http://localhost:4000/api/product [POST] [ADMIN]
-http://localhost:4000/api/product/:pid [PUT] [ADMIN]
-http://localhost:4000/api/product/:pid [DELETE] [ADMIN]
+http://localhost:4000/api/product [GET] 
+http://localhost:4000/api/product/:pid [GET] 
+http://localhost:4000/api/product [POST] [ADMIN] [PREMIUM]
+http://localhost:4000/api/product/:pid [PUT] [ADMIN] [PREMIUM]
+http://localhost:4000/api/product/:pid [DELETE] [ADMIN] [PREMIUM]
 ```
 ### Cart:
 ```
