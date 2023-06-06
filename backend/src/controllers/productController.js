@@ -133,6 +133,23 @@ export const updateProduct = async (req, res) => {
 }
 
 export const deleteProduct = async (req, res) => {
+    const user = await getSessionObject(req,res);
+    //Solo los roles ADMIN y PREMIUM llegan hasta acá, ya que el restante de roles no pasan el middleware
+    if (user.rol=="Premium"){
+        const product = await findProductById(req.params.pid);
+        if (product){
+            if (product.owner != user._id){
+                return res.status(200).json({
+                    message:"You can't delete products if you're not the owner"
+                })
+            }
+        }else{
+            return res.status(200).json({
+                message: "Product not found"
+            })
+        }
+       
+    }
     const idProduct = req.params.pid;
 
     try {
