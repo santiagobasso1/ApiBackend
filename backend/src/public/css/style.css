@@ -1,0 +1,20 @@
+.divFormularioPedirEmail{
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    margin: 80px 40%;
+}
+.inputLogin{
+    border: solid 1px;
+}
+
+.restorePasswordForm{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

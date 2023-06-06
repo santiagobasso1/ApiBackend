@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 import 'dotenv/config.js'
-let transporter = nodemailer.createTransport({ //Genero la forma de enviar info desde mail (o sea, desde Gmail con x cuenta)
+export const transporter = nodemailer.createTransport({ //Genero la forma de enviar info desde mail (o sea, desde Gmail con x cuenta)
     host: 'smtp.gmail.com', //Defino que voy a utilizar un servicio de Gmail
     port: 465,
     secure: true,

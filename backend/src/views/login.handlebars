@@ -1,0 +1,49 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div>
+        <form class="loginForm">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example1">Email address</label>
+                <input  type="email" id="email" class="form-control inputLogin" />
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example2">Password</label>
+                <input  type="password" id="password" class="form-control inputLogin" />
+            </div>
+
+            <div class="row mb-4">
+                <div class="col">
+                    <a href="http://localhost:4000/handlebars/emailForm">Forgot password?</a>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <button id="btnLogin" type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Not a member? <a href="http://localhost:4000/handlebars/register">Register</a></p>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="/js/login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+</body>
+
+</html>

@@ -12,6 +12,12 @@ import { Server } from "socket.io";
 import compression from 'express-compression'
 import errorHandler from './middleware/errors/errorHandler.js';
 import { addLogger } from './utils/logger.js';
+import {engine} from 'express-handlebars'
+import * as path from 'path';
+import { __dirname } from "./path.js";
+
+
+
 
 const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 //CORS (Me da problemas por eso comentado)
@@ -31,6 +37,14 @@ const corsOptions = {
 //Iniciar Server
 const app = express()
 
+
+//HANDLEBARS YA QUE REACT NO ME QUIERE
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", path.resolve(__dirname, "./views"));
+
+
+
 //MIDDLEWARES
 app.use(cookieParser(process.env.SIGNED_COOKIE))
 app.use(express.json())
@@ -46,6 +60,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use("/", express.static(__dirname + "/public"));
 
 //Passport
 initializePassport()
@@ -69,7 +84,7 @@ const connectionMongoose = async () => {
 
 connectionMongoose()
 
-app.use(cookieParser(process.env.JWT_SECRET))
+// app.use(cookieParser(process.env.JWT_SECRET))
 //Logger
 app.use(addLogger)
 //Error Handler
@@ -95,3 +110,5 @@ export const io = new Server(server, {
         maxAge: 3600,
     },
 });
+
+

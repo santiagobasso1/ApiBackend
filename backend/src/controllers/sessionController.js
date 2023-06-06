@@ -1,10 +1,11 @@
-import { createUser, findUserByEmail } from "../services/UserService.js";
+import { createUser, findUserByEmail, updateUser } from "../services/UserService.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import { validatePassword, createHash } from "../utils/bcrypt.js";
 import { CustomError } from "../utils/errors/customErrors.js";
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
-
+import crypto from 'crypto'
+import { transporter } from "../utils/email.js";
 export const loginUser = async (req, res, next) => {
     try {
         passport.authenticate('login', (err, user) => {
@@ -18,7 +19,7 @@ export const loginUser = async (req, res, next) => {
             if (!user) {
 
                 return res.status(401).send({
-                    message:"Usuario o contraseña no validos",
+                    message: "Usuario o contraseña no validos",
                     user: user
                 })
             }
@@ -34,7 +35,7 @@ export const loginUser = async (req, res, next) => {
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
-            message: "Hubo un error en el servidor", 
+            message: "Hubo un error en el servidor",
             error: error.message
         })
     }
@@ -93,14 +94,15 @@ export const registerUser = async (req, res, next) => {
     try {
         passport.authenticate('register', async (err, user) => {
             if (err) {
-                return res.status(401).send({ 
-                    message: "Ha ocurrido un error durante el registro", 
-                    error: err.message })
+                return res.status(401).send({
+                    message: "Ha ocurrido un error durante el registro",
+                    error: err.message
+                })
             }
             if (!user) {
                 return res.status(401).send({
                     message: "El correo electrónico ya está en uso",
-                    user: user                  
+                    user: user
                 })
             }
             return res.status(200).send({
@@ -112,7 +114,7 @@ export const registerUser = async (req, res, next) => {
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
-            message: "Hubo un error en el servidor", 
+            message: "Hubo un error en el servidor",
             error: error.message
         })
     }
@@ -130,7 +132,7 @@ export const destroySession = async (req, res) => {
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
-            message: "Hubo un error en el servidor", 
+            message: "Hubo un error en el servidor",
             error: error.message
         })
     }
@@ -139,7 +141,7 @@ export const destroySession = async (req, res) => {
 export const getSession = async (req, res) => {
     try {
         if (req.session.login) {
-            req.logger.info("GetSessionUser: "+req.session.user)
+            req.logger.info("GetSessionUser: " + req.session.user)
             res.status(200).json({ response: req.session.user });
         } else {
             return res.status(401).send("No existe sesion activa")
@@ -147,8 +149,129 @@ export const getSession = async (req, res) => {
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
-            message: "Hubo un error en el servidor", 
+            message: "Hubo un error en el servidor",
             error: error.message
         })
     }
+}
+
+
+export const sendResetPasswordLink = async (req, res, next) => {
+    const { email } = req.body
+
+    try {
+        const user = await findUserByEmail(email)
+        if (!user) {
+            res.status(404).send('Email not found in database')
+            next()
+        }
+        if (user) {
+            const resetLink = await generatePasswordResetLink(user, req, res)
+
+            const mailToSend = {
+                from: 'no-reply',
+                to: email,
+                subject: 'Password reset link',
+                text: `Dirigete al siguiente link para poner una nueva contraseña
+            ${resetLink}`
+            }
+            transporter.sendMail(mailToSend)
+
+            req.logger.debug(user)
+
+            req.logger.info(`Password reset link sent to ${email}`)
+            res.status(200).json(`Password reset link sent to ${email}`)
+        }
+
+
+    } catch (error) {
+        req.logger.error(`Error in password reset - ${error.message}`)
+        res.status(500).send({
+            message: 'Server internal error',
+            error: error.message
+        })
+    }
+}
+
+
+
+export const resetPassword = async (req, res, next) => {
+    const email = req.signedCookies.tokenEmail
+    const { password, confirmPassword } = req.body
+    console.log(email)
+    try {
+        const browserCookie = req.signedCookies.resetToken
+        console.log(browserCookie)
+        const user = await findUserByEmail(email)
+
+        if (!user) {
+            res.status(404).send('Email not found')
+            return
+        }
+
+        if (!browserCookie || isTokenExpired(browserCookie, user.resetToken)) {
+            res.status(401).send('Password reset link expired')
+            return
+        }
+
+        if (user.resetToken.token !== browserCookie) {
+            res.status(401).send('Unauthorized action')
+            return
+        }
+
+        if (password !== confirmPassword) {
+            res.status(400).send('Both password fields must match')
+            return
+        }
+
+        if (await validatePassword(password, user.password)) {
+            res.status(400).send('New password must be different from the current one')
+            return
+        }
+
+        // * Requirements passed, now we change the password
+        const newPassword = await createHash(password.toString())
+        await updateUser(user._id, {
+            password: newPassword,
+            resetToken: { token: '' }
+        })
+        res.status(200).send('Password updated. Redirecting to login.')
+
+    } catch (error) {
+        res.status(500).send({
+            message: 'Error on password reset',
+            error: error.message
+        })
+    }
+}
+
+
+
+async function generatePasswordResetLink(user, req, res) {
+    const token = crypto.randomBytes(20).toString('hex')
+
+    await updateUser(user._id, {
+        resetToken: {
+            token: token,
+            createdAt: Date.now()
+        }
+    })
+
+    res.cookie('resetToken', token, {
+        signed: true,
+        maxAge: 1000 * 60 * 60
+    })
+    //Generamos un email que dure lo mismo que el token para no tener que pedirselo al usuario
+    res.cookie('tokenEmail', user.email, {
+        signed: true,
+        maxAge: 1000 * 60 * 60
+    })
+    const link = `http://localhost:4000/handlebars/restorePassword`
+    return link
+}
+
+function isTokenExpired(receivedCookie, storedToken) {
+    const elapsedTime = Date.now() - storedToken.createdAt
+    const expirationTime = 1000 * 60 * 60
+    return elapsedTime >= expirationTime
 }

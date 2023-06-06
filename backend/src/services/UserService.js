@@ -40,3 +40,12 @@ export const createUser = async (user) => {
 }
 
 
+
+
+export const updateUser = async (id, info) => {
+    try {
+      return await userModel.findByIdAndUpdate(id, info);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }

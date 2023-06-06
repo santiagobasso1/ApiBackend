@@ -31,7 +31,18 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Carts',
         required: true
-    }
+    },
+    resetToken: {
+        token: {
+          type: String,
+          default: '',
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+          default: Date.now
+        }
+      }
 })
 
 const userModel = model("Users", userSchema)

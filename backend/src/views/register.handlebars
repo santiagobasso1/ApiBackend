@@ -1,0 +1,58 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/lux/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div>
+        <form class="loginForm">
+            <!-- First_Name -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example2">First Name</label>
+                <input type="text" id="first_name" class="form-control inputLogin" />
+            </div>
+             <!-- Last_Name -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example2">Last Name</label>
+                <input type="text" id="last_name" class="form-control inputLogin" />
+            </div>
+            <!-- Age -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example2">Age</label>
+                <input type="number" id="age" class="form-control inputLogin" />
+            </div>
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example1">Email address</label>
+                <input type="email" id="email" class="form-control inputLogin" />
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example2">Password</label>
+                <input type="password" id="password" class="form-control inputLogin" />
+            </div>
+
+            <!-- Submit button -->
+            <button id="btnLogin" type="button" class="btn btn-primary btn-block mb-4">Sign Up</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Already registered? <a href="http://localhost:4000/handlebars/login">Login</a></p>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="/js/register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+</body>
+
+</html>
