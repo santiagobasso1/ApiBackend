@@ -25,7 +25,7 @@ export const roleVerification = (roles) => {
         console.log(userAccess)
         if (!req.session.user) {
             req.logger.fatal("User not allowed")
-            return res.status(401).send({ error: "User no autorizado" })
+            return res.status(401).json({ error: "User no autorizado" })
         }
 
         roles.forEach(rolEnviado => {
@@ -37,7 +37,7 @@ export const roleVerification = (roles) => {
         });
 
         if (bandera == 1) {
-            return res.status(401).send({ error: "User no posee los permisos necesarios" })
+            return res.status(401).json({ error: "User no posee los permisos necesarios" })
         }
 
 

@@ -28,7 +28,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductNewOrUpdate"
+              $ref: "#/components/schemas/ProductNew"
       responses:
         "200":
           description: "Producto creado correctamente"
@@ -62,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/ProductDBResponse"
+                $ref: "#components/schemas/Product"
         "500":
           description: "Error al buscar el producto"
 
@@ -86,7 +86,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductNewOrUpdate"
+              $ref: "#/components/schemas/ProductUpdate"
       responses:
         "200":
           description: "Producto actualizado correctamente"
@@ -133,7 +133,50 @@ paths:
 
 components:
   schemas:
-    ProductNewOrUpdate:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Id del producto"
+        title:
+          type: string
+          description: "Titulo del producto"
+        description:
+          type: string
+          decription: "Descripcion del producto"
+        code:
+          type: string
+          description: "Codigo unico del producto"
+        price:
+          type: number
+          description: "Precio del producto"
+        status:
+          type: boolean
+          description: "Estado del producto, activo o inactivo"
+        stock:
+          type: number
+          description: "El stock actual del producto"
+        category:
+          type: string
+          description: "Categoria del producto"
+        thumbnails:
+          type: array
+          description: "Imagenes del producto"
+      example:
+        _id: "6482c8d7bbc96be4d5a60c2f"
+        title: "Ryzen7 5700g"
+        description: "Procesador gama media-alta"
+        code: "aaab"
+        price: 130000
+        status: true
+        stock: 30
+        category: "Procesadores"
+        thumbnails: ["ejemplo.jpg", "ejemplo2.jpg"]
+
+
+
+    ProductNew:
       type: object
       properties:
         title:
@@ -169,6 +212,43 @@ components:
         stock: 30
         category: "Procesadores"
         thumbnails: ["ejemplo.jpg", "ejemplo2.jpg"]
+
+
+
+    ProductUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: "Titulo del producto"
+        description:
+          type: string
+          decription: "Descripcion del producto"
+        price:
+          type: number
+          description: "Precio del producto"
+        status:
+          type: boolean
+          description: "Estado del producto, activo o inactivo"
+        stock:
+          type: number
+          description: "El stock actual del producto"
+        category:
+          type: string
+          description: "Categoria del producto"
+        thumbnails:
+          type: array
+          description: "Imagenes del producto"
+      example:
+        title: "Ryzen7 5700g"
+        description: "Procesador gama media-alta"
+        price: 130000
+        status: true
+        stock: 30
+        category: "Procesadores"
+        thumbnails: ["ejemplo.jpg", "ejemplo2.jpg"]
+
+
 
     ProductDBResponse:
       type: object

@@ -11,5 +11,5 @@ routerCarts.post('/product/:pid',roleVerification(["Usuario"]), addProductToCart
 routerCarts.put('/product/:pid',roleVerification(["Usuario"]), updateProductQuantity);
 routerCarts.delete('/',roleVerification(["Usuario"]), deleteAllProductsFromCart);
 routerCarts.delete('/product/:pid',roleVerification(["Usuario"]), deleteOneProductFromCart);
-routerCarts.post('/purchase',roleVerification(["Usuario"]),generateTicketAndSave)
+routerCarts.post('/purchase',roleVerification(["Usuario"]), generateTicketAndSave)
 export default routerCarts
