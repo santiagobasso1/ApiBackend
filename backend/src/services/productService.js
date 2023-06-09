@@ -43,8 +43,8 @@ export const deleteOneProduct = async (id) => {
 
 export const updateOneProduct = async (id, info) => {
     try {
-        const product = await productModel.findByIdAndUpdate(id, info);
-        return product
+        const productBeforeUpdate = await productModel.findByIdAndUpdate(id, info);
+        return productBeforeUpdate
     } catch (error) {
         throw new Error(error);
     }

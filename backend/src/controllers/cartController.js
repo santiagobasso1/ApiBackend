@@ -40,11 +40,9 @@ export const updateCartProducts = async (req, res) => {
     if (req.session.login) {
         const idCart = req.session.user.idCart;
         const info = req.body;
-        console.log(info)
         try {
             await updateCart(idCart, { products: info });
             const cart = await findCartById(idCart)
-            console.log(cart)
             req.logger.info("Cart updated");
             return res.status(200).json({
                 message: "Carrito actualizado",

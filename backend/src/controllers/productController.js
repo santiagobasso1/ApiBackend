@@ -134,8 +134,8 @@ export const updateProduct = async (req, res) => {
     const info = req.body;
 
     try {
-        const product = await updateOneProduct(idProduct, info);
-
+        await updateOneProduct(idProduct, info);
+        const product = await findProductById(idProduct)
         if (product) {
             return res.status(200).json({
                 message: "Producto actualizado",

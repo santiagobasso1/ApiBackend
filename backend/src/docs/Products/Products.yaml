@@ -163,6 +163,9 @@ components:
         thumbnails:
           type: array
           description: "Imagenes del producto"
+        __v:
+          type: number
+          description: "Version del registro"
       example:
         _id: "6482c8d7bbc96be4d5a60c2f"
         title: "Ryzen7 5700g"
@@ -173,6 +176,7 @@ components:
         stock: 30
         category: "Procesadores"
         thumbnails: ["ejemplo.jpg", "ejemplo2.jpg"]
+        __v: 0
 
 
 
@@ -206,7 +210,7 @@ components:
       example:
         title: "Ryzen7 5700g"
         description: "Procesador gama media-alta"
-        code: "aaab"
+        code: "aaabab1"
         price: 130000
         status: true
         stock: 30
