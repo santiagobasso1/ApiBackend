@@ -13,7 +13,8 @@ const productSchema = new Schema({
     code: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true //MongoDB dejó guardar productos con el mismo code así que agregué esta linea y lo solucionó
     },
     price: {
         type: Number,
@@ -34,13 +35,14 @@ const productSchema = new Schema({
     thumbnails: {
         type: Array,
         default: []
-    },
-    owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users',
-        required: true,
-        default: "admin"
-    },
+    }
+    //Esto era solo para el desafio complementario de la practica integradora 3
+    // owner: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Users',
+    //     required: true,
+    //     default: "admin"
+    // },
 })
 
 productSchema.plugin(paginate)

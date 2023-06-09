@@ -17,7 +17,10 @@ export const getCart = async (req, res) => {
             }
 
             const cartPopulate = await cart.populate({ path: "products.productId", model: productModel })
-            res.status(200).json({ cartPopulate });
+            res.status(200).json({ 
+                message: "Carrito devuelto correctamente",
+                cart: cartPopulate 
+            });
 
         } catch (error) {
             req.logger.fatal("Fatal error/Server connection")
@@ -39,9 +42,12 @@ export const updateCartProducts = async (req, res) => {
         const info = req.body;
 
         try {
-            const products = await updateCart(idCart, { products: info });
+            const cart = await updateCart(idCart, { products: info });
             req.logger.info("Cart updated")
-            return res.status(200).send("Carrito actualizado")
+            return res.status(200).json({
+                message:"Carrito actualizado",
+                cart: cart
+            })
 
         } catch (error) {
             req.logger.fatal("Fatal error/Server connection")
@@ -85,7 +91,11 @@ export const addProductToCart = async (req, res, next) => {
         
                         await cart.save();
                         req.logger.info("New Product in the cart, id:"+idProduct)
-                        return res.status(200).send("Producto agregado al carrito")
+                        return res.status(200).json({
+                            message:"Producto agregado al carrito",
+                            cart: await cart.populate({ path: "products.productId", model: productModel })
+
+                        })
                     }
         
                 } catch (error) {
@@ -124,7 +134,10 @@ export const updateProductQuantity = async (req, res) => {
 
             cart.products[productIndex].quantity = newQuantity;
             await cart.save();
-            return res.status(200).send("Cantidad del producto actualizada")
+            return res.status(200).json({
+                message:"Cantidad del producto actualizada",
+                cart: await cart.populate({ path: "products.productId", model: productModel })
+            })
 
         } catch (error) {
             req.logger.fatal("Fatal error/Server connection")
@@ -145,7 +158,7 @@ export const deleteAllProductsFromCart = async (req, res) => {
 
         try {
             await updateCart(idCart, { products: [] });
-            return res.status(200).send("Productos borrados")
+            return res.status(200).json({message:"Productos borrados"})
 
         } catch (error) {
             req.logger.fatal("Fatal error/Server connection")
@@ -175,7 +188,10 @@ export const deleteOneProductFromCart = async (req, res) => {
 
             cart.products.splice(productIndex, 1);
             await cart.save();
-            return res.status(200).send("El producto ha sido eliminado del carrito")
+            return res.status(200).json({
+                message:"El producto ha sido eliminado del carrito",
+                cart: await cart.populate({ path: "products.productId", model: productModel })
+            })
 
 
         } catch (error) {

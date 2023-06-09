@@ -15,7 +15,9 @@ import { addLogger } from './utils/logger.js';
 import {engine} from 'express-handlebars'
 import * as path from 'path';
 import { __dirname } from "./path.js";
-
+//Swagger
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
 
 
 
@@ -111,4 +113,22 @@ export const io = new Server(server, {
     },
 });
 
+//Configuración SWAGGER
+const swaggerOptions = {
+    definition:{
+        openapi: '3.0.1',
+        info:
+        {
+            title: "Doc Backend Santiago Basso",
+            description: "API para un ecommerce hecha en NodeJS para Coderhouse"
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
 
+
+
+
+const specs = swaggerJSDoc(swaggerOptions)
+
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))

@@ -40,6 +40,7 @@ export const deleteOneProduct = async (id) => {
     }
 }
 
+
 export const updateOneProduct = async (id, info) => {
     try {
         return await productModel.findByIdAndUpdate(id, info);

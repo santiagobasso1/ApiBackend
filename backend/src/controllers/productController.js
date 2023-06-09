@@ -3,6 +3,7 @@ import { CustomError } from '../utils/errors/customErrors.js';
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 import { generateAddProductErrorInfo } from "../utils/errors/errorInfo.js";
 import { getSessionObject } from "./sessionController.js";
+
 export const getProducts = async (req, res, next) => {
     const { limit = 10, page = 1, sort = "", category = "" } = req.query;
 
@@ -60,7 +61,7 @@ export const getProduct = async (req, res) => {
 
 export const addProducts = async (req, res, next) => {
     //EL control de si el usuario es premium o no se realiza antes, en el middleware de roleVerification
-    const user = await getSessionObject(req,res);
+    // const user = await getSessionObject(req,res);
     const info = req.body;
     try {
         if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) 
@@ -82,9 +83,10 @@ export const addProducts = async (req, res, next) => {
             req.logger.fatal("Missing fields, product:"+info)
         }else{
             try {
-                if (user){
-                    info.owner = user._id
-                }
+                //Comentado porque solo fue para la practica integradora 3 donde asociabamos al usuario con el producto
+                // if (user){
+                //     info.owner = user._id
+                // }
                 console.log(info)
                 const products = await insertProducts(info);
                 res.status(200).send({
@@ -109,23 +111,25 @@ export const addProducts = async (req, res, next) => {
 
 export const updateProduct = async (req, res) => {
 
-    const user = await getSessionObject(req,res);
+    // const user = await getSessionObject(req,res);
     //Solo los roles ADMIN y PREMIUM llegan hasta acá, ya que el restante de roles no pasan el middleware
-    if (user.rol=="Premium"){
-        const product = await findProductById(req.params.pid);
-        if (product){
-            if (product.owner != user._id){
-                return res.status(200).json({
-                    message:"You can't modify products if you're not the owner"
-                })
-            }
-        }else{
-            return res.status(200).json({
-                message: "Product not found"
-            })
-        }
+    //Está comentado ya que el usuario PREMIUM solo fue para la practica integradora 3
+    // if (user.rol=="Premium"){
+    //     const product = await findProductById(req.params.pid);
+    //     if (product){
+    //         if (product.owner != user._id){
+    //             return res.status(200).json({
+    //                 message:"You can't modify products if you're not the owner"
+    //             })
+    //         }
+    //     }else{
+    //         return res.status(200).json({
+    //             message: "Product not found"
+    //         })
+    //     }
        
-    }
+    // }
+    
     const idProduct = req.params.pid;
     const info = req.body;
 
@@ -134,11 +138,12 @@ export const updateProduct = async (req, res) => {
 
         if (product) {
             return res.status(200).json({
-                message: "Producto actualizado"
+                message: "Producto actualizado",
+                product: product
             });
         }
 
-        res.status(200).json({
+        res.status(404).json({
             message: "Producto no encontrado"
         });
 
@@ -151,41 +156,43 @@ export const updateProduct = async (req, res) => {
 }
 
 export const deleteProduct = async (req, res) => {
-    const user = await getSessionObject(req,res);
+    // const user = await getSessionObject(req,res);
     //Solo los roles ADMIN y PREMIUM llegan hasta acá, ya que el restante de roles no pasan el middleware
-    if (user.rol=="Premium"){
-        const product = await findProductById(req.params.pid);
-        if (product){
-            if (product.owner != user._id){
-                return res.status(200).json({
-                    message:"You can't delete products if you're not the owner"
-                })
-            }
-        }else{
-            return res.status(200).json({
-                message: "Product not found"
-            })
-        }
+    //Está comentado ya que el usuario PREMIUM solo fue para la practica integradora 3
+    // if (user.rol=="Premium"){
+    //     const product = await findProductById(req.params.pid);
+    //     if (product){
+    //         if (product.owner != user._id){
+    //             return res.status(200).json({
+    //                 message:"You can't delete products if you're not the owner"
+    //             })
+    //         }
+    //     }else{
+    //         return res.status(200).json({
+    //             message: "Product not found"
+    //         })
+    //     }
        
-    }
+    // }
     const idProduct = req.params.pid;
 
     try {
         const product = await deleteOneProduct(idProduct);
-
+        console.log(product)
         if (product) {
             return res.status(200).json({
-                message: "Producto eliminado"
+                message: "Producto eliminado",
+                product: product
             });
         }
 
-        res.status(200).json({
+        res.status(404).json({
             message: "Producto no encontrado"
         });
 
     } catch (error) {
         req.logger.fatal("Fatal error: "+error.message)
-        res.status(500).send({
+        res.status(500).json({
             error: error.message
         });
     }
