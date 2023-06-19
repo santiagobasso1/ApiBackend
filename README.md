@@ -1,6 +1,6 @@
-# 👋 Documentación con swagger || Arreglos en devolución de los endpoints
-_Eliminación de la mayoria de los console.log reemplazandolos por logs_
-
+# 👋 Módulos de testing para el Proyecto Final
+_Implementación de unit testing, con supertest, mocha y chai_
+_Para esta entrega no fueron utilizadas las vistas_
 ## Pre Requirements 📋
 
 _Para utilizar la aplicación necesita instalar las dependencias con el siguiente comando:_
