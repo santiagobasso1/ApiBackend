@@ -4,6 +4,7 @@ import GitHubStrategy from 'passport-github2';
 import { createHash, validatePassword } from '../utils/bcrypt.js';
 import { findUserByEmail, findUserById, createUser } from '../services/UserService.js';
 import { createCart } from '../services/cartService.js';
+
 const LocalStrategy = local.Strategy;
 
 export const initializePassport = () => {

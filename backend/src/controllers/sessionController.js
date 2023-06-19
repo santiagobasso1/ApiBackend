@@ -1,3 +1,4 @@
+import 'dotenv/config.js'
 import { createUser, findUserByEmail, updateUser } from "../services/UserService.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -6,6 +7,7 @@ import { CustomError } from "../utils/errors/customErrors.js";
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 import crypto from 'crypto'
 import { transporter } from "../utils/email.js";
+
 export const loginUser = async (req, res, next) => {
     try {
         passport.authenticate('login', (err, user) => {
@@ -14,24 +16,20 @@ export const loginUser = async (req, res, next) => {
                     message: "Ha ocurrido un error durante el login",
                     error: err.message
                 })
-
             }
             if (!user) {
-
                 return res.status(401).send({
-                    message: "Usuario o contraseña no validos",
+                    message: "Usuario o contraseña no válidos",
                     user: user
                 })
             }
-            req.session.login = true;
-            req.session.user = user;
-            console.log(req.session)
-            return res.status(200).send({
-                meesage: "Login exitoso",
-                user: user
-            })
-        })(req, res, next)
-
+            const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "1h" });
+            console.log(token);
+            res.cookie('userCookie', token, { maxAge: 3600000 }).send({
+                status: "success",
+                message: "Logged in"
+            });
+        })(req, res, next);
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
@@ -39,8 +37,10 @@ export const loginUser = async (req, res, next) => {
             error: error.message
         })
     }
-
 }
+
+
+
 //JWT Por el profe, no implementado JWT
 // export const loginUser = async (req, res, next) => {
 //     try {
@@ -139,20 +139,49 @@ export const destroySession = async (req, res) => {
 }
 
 export const getSession = async (req, res) => {
-    try {
-        if (req.session.login) {
-            req.logger.info("GetSessionUser: " + req.session.user)
-            res.status(200).json({ response: req.session.user });
-        } else {
-            return res.status(401).send("No existe sesion activa")
+    //Con JWT
+    const cookie = req.cookies['userCookie']
+    if (!cookie){
+        req.logger.fatal("Logued user not found")
+        return res.status(401).json({ error: "Logued user not found" })
+    }
+    const user = jwt.verify(cookie,process.env.JWT_SECRET);
+    console.log(user)
+    try{
+        if(user){
+            return res.status(200).json({ 
+                message: "success" ,
+                ...user
+            });
+        }else{
+            return res.status(404).json({ 
+                message: "error, session not found" 
+            });
         }
-    } catch (error) {
-        req.logger.fatal("Fatal error/Server connection")
-        res.status(500).send({
-            message: "Hubo un error en el servidor",
-            error: error.message
+    }catch(error){
+        return res.status(500).json({
+            message: "error with the server",
+            error: error
         })
     }
+    
+    //Esto es sin JWT
+    // if(user)
+    //     return res.send({status:"success",payload:user})
+    // try {
+    //     if (req.session.login) {
+    //         req.logger.info("GetSessionUser: " + req.session.user)
+    //         res.status(200).json({ response: req.session.user });
+    //     } else {
+    //         return res.status(401).send("No existe sesion activa")
+    //     }
+    // } catch (error) {
+    //     req.logger.fatal("Fatal error/Server connection")
+    //     res.status(500).send({
+    //         message: "Hubo un error en el servidor",
+    //         error: error.message
+    //     })
+    // }
 }
 
 export const getSessionObject = async (req, res) => {
