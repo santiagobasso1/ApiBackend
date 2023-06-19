@@ -137,28 +137,33 @@ describe("Testing de la aplicación con supertest", () => {
                     }
                 ]
             const { statusCode, _body, ok } = await requester.put('/api/cart').set('Cookie', userCookie).send(newCart);
-            expect(statusCode).to.be.equal(200)
+            expect(statusCode).to.be.equal(200);
+            expect(_body).to.be.an('object');
 
         })
         it("Ruta: api/cart con metodo POST", async function () {
             const productId = '648ffb7419c99e941fd4216d'
             const { statusCode, _body, ok } = await requester.post(`/api/cart/product/${productId}`).set('Cookie', userCookie)
             expect(statusCode).to.be.equal(200)
+            expect(_body).to.be.an('object');
         })
         it("Ruta: api/cart con metodo PUT para cambiar cantidad", async function () {
             const newQuantity = 11
             const productId = '648ffb7419c99e941fd4216d'
             const { statusCode, _body, ok } = await requester.put(`/api/cart/product/${productId}`).set('Cookie', userCookie).send({ quantity: newQuantity });
             expect(statusCode).to.be.equal(200)
+            expect(_body).to.be.an('object');
         })
         it("Ruta: api/cart con metodo DELETE para borrar 1 producto en particular por su id", async function () {
             const productId = '648ffb7419c99e941fd4216d'
             const { statusCode, _body, ok } = await requester.delete(`/api/cart/product/${productId}`).set('Cookie', userCookie);
             expect(statusCode).to.be.equal(200)
+            expect(_body).to.be.an('object');
         })
         it("Ruta: api/cart con metodo DELETE para borrar todos los productos del carrito", async function () {
             const { statusCode, _body, ok } = await requester.delete(`/api/cart`).set('Cookie', userCookie);
             expect(statusCode).to.be.equal(200)
+            expect(_body).to.be.an('object');
         })
     });
 });
