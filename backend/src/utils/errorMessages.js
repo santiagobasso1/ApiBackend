@@ -18,6 +18,8 @@ export const passportError = (strategy) => {
     }
 }
 
+
+
 export const roleVerification = (roles) => {
     //CON JWT
     return async (req,res,next)=>{
@@ -28,14 +30,19 @@ export const roleVerification = (roles) => {
                 return res.status(401).json({ error: "Logued user not found" })
             }
             const loguedUser = jwt.verify(cookie,process.env.JWT_SECRET).user;
-    
+            let allowed = false
             roles.forEach(rol => {
                 if (rol.toUpperCase() === loguedUser.rol.toUpperCase()){
-                    req.logger.info("El usuario tiene los permisos necesarios")
-                    next()
+                    req.logger.info("User Allowed")
+                    allowed = true
                 }
             });
-            return res.status(403).json({message:"El usuario no tiene los permisos necesarios"})
+            
+            if (!allowed){
+                return res.status(403).json({message:"User not allowed"})
+            }
+            
+            next()
         }catch(error){
             res.status(500).json({message:"Error with the server"})
         }

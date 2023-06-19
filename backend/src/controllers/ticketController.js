@@ -1,9 +1,15 @@
 import { findCartById, updateCart, createCart } from "../services/cartService.js";
 import { findProductById } from "../services/productService.js";
 import { createTicket, returnLastCode } from "../services/ticketService.js";
-
+import jwt from "jsonwebtoken";
 export const generateTicketAndSave = async (req, res) => {
-    const cart = await findCartById(req.session.user.idCart)
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    const cart = await findCartById(idCart)
     if (cart.products.length > 0) {
         let amount = 0;
         let productosSinStock = [];

@@ -122,49 +122,65 @@ export const registerUser = async (req, res, next) => {
 }
 
 export const destroySession = async (req, res) => {
+    //CON JWT
     try {
-        if (req.session.login) {
-            req.session.destroy()
-            res.status(200).send("La sesión ha terminado, hasta la próxima")
-        } else {
-            return res.status(401).send("No existe sesion activa")
+        const cookie = req.cookies['userCookie']
+        if (cookie){
+            res.clearCookie('userCookie')
+            res.status(200).json({message:"See you next time"})
+        }else{
+            res.status(404).json({message:"Session not found"});
         }
     } catch (error) {
-        req.logger.fatal("Fatal error/Server connection")
         res.status(500).send({
             message: "Hubo un error en el servidor",
             error: error.message
         })
     }
+    //SIN JWT
+    // try {
+    //     if (req.session.login) {
+    //         req.session.destroy()
+    //         res.status(200).send("La sesión ha terminado, hasta la próxima")
+    //     } else {
+    //         return res.status(401).send("No existe sesion activa")
+    //     }
+    // } catch (error) {
+    //     req.logger.fatal("Fatal error/Server connection")
+    //     res.status(500).send({
+    //         message: "Hubo un error en el servidor",
+    //         error: error.message
+    //     })
+    // }
 }
 
 export const getSession = async (req, res) => {
     //Con JWT
     const cookie = req.cookies['userCookie']
-    if (!cookie){
+    if (!cookie) {
         req.logger.fatal("Logued user not found")
         return res.status(401).json({ error: "Logued user not found" })
     }
-    const user = jwt.verify(cookie,process.env.JWT_SECRET);
+    const user = jwt.verify(cookie, process.env.JWT_SECRET);
     console.log(user)
-    try{
-        if(user){
-            return res.status(200).json({ 
-                message: "success" ,
+    try {
+        if (user) {
+            return res.status(200).json({
+                message: "success",
                 ...user
             });
-        }else{
-            return res.status(404).json({ 
-                message: "error, session not found" 
+        } else {
+            return res.status(404).json({
+                message: "error, session not found"
             });
         }
-    }catch(error){
+    } catch (error) {
         return res.status(500).json({
             message: "error with the server",
             error: error
         })
     }
-    
+
     //Esto es sin JWT
     // if(user)
     //     return res.send({status:"success",payload:user})
@@ -206,7 +222,7 @@ export const sendResetPasswordLink = async (req, res) => {
     try {
         const user = await findUserByEmail(email)
         if (!user) {
-            return res.status(404).send({message:'Email not found in database'})
+            return res.status(404).send({ message: 'Email not found in database' })
 
         }
         if (user) {
@@ -241,8 +257,8 @@ export const sendResetPasswordLink = async (req, res) => {
 
 export const resetPassword = async (req, res, next) => {
     const email = req.signedCookies.tokenEmail
-    if (!email){
-        return res.status(404).send({message:'Email not found or password reset link expired, redirecting'})
+    if (!email) {
+        return res.status(404).send({ message: 'Email not found or password reset link expired, redirecting' })
     }
     const { password, confirmPassword } = req.body
     console.log(email)
@@ -254,23 +270,23 @@ export const resetPassword = async (req, res, next) => {
 
         //Está este control pero no es necesario ya que reviso antes que el usuario exista, por un caso muy raro como si lo borraran en ese tiempo entre que pidió el link y hizo el recovery
         if (!user) {
-            return res.status(404).send({message:'Email not found, redirecting'})
+            return res.status(404).send({ message: 'Email not found, redirecting' })
         }
 
         if (!browserCookie || isTokenExpired(browserCookie, user.resetToken)) {
-            return res.status(401).send({message:'Password reset link expired'})
+            return res.status(401).send({ message: 'Password reset link expired' })
         }
 
         if (user.resetToken.token !== browserCookie) {
-            return res.status(401).send({message:'Unauthorized action'})
+            return res.status(401).send({ message: 'Unauthorized action' })
         }
 
         if (password !== confirmPassword) {
-            return res.status(400).send({message:'Both password fields must match'})
+            return res.status(400).send({ message: 'Both password fields must match' })
         }
 
         if (await validatePassword(password, user.password)) {
-            return res.status(400).send({message:'New password must be different from the current one'})
+            return res.status(400).send({ message: 'New password must be different from the current one' })
         }
 
         // * Requirements passed, now we change the password
@@ -279,7 +295,7 @@ export const resetPassword = async (req, res, next) => {
             password: newPassword,
             resetToken: { token: '' }
         })
-        res.status(200).send({message:'Password updated. Redirecting to login.'})
+        res.status(200).send({ message: 'Password updated. Redirecting to login.' })
 
     } catch (error) {
         res.status(500).send({
@@ -303,7 +319,7 @@ async function generatePasswordResetLink(user, req, res) {
 
     res.cookie('resetToken', token, {
         signed: true,
-        maxAge: 1000 * 60 * 60 
+        maxAge: 1000 * 60 * 60
     })
     //Generamos un email que dure lo mismo que el token para no tener que pedirselo al usuario
     res.cookie('tokenEmail', user.email, {

@@ -7,7 +7,7 @@ const routerSession = Router()
 
 routerSession.post("/register", registerUser)
 routerSession.post("/login", loginUser)
-routerSession.get("/logout", destroySession);
+routerSession.post("/logout", destroySession);
 routerSession.get("/current", getSession);
 routerSession.post('/password/createlink', sendResetPasswordLink)
 routerSession.post('/password/reset', resetPassword)

@@ -4,206 +4,257 @@ import productModel from "../models/MongoDB/productModel.js";
 import { CustomError } from '../utils/errors/customErrors.js';
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 import { generateAddProductToCartErrorInfo } from "../utils/errors/errorInfo.js";
+import { isValidObjectId } from "mongoose";
+import jwt from "jsonwebtoken"
 
 export const getCart = async (req, res) => {
-    if (req.session.login) {
-        const idCart = req.session.user.idCart;
-
-        try {
-            const cart = await findCartById(idCart);
-
-            if (!cart) {
-                throw new Error(`El carrito no existe`);
-            }
-
-            const cartPopulate = await cart.populate({ path: "products.productId", model: productModel })
-            res.status(200).json({ 
-                message: "Carrito devuelto correctamente",
-                cart: cartPopulate 
-            });
-
-        } catch (error) {
-            req.logger.fatal("Fatal error/Server connection")
-            res.status(500).json({
-                message: "Hubo un error en el servidor", 
-                error: error.message
-            })
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    try {
+        const cart = await findCartById(idCart);
+        if (!cart) {
+            throw new Error(`El carrito no existe`);
         }
-
-    } else {
-        req.logger.error("Session not found")
-        return res.status(401).send("No existe sesion activa")
+        const cartPopulate = await cart.populate({ path: "products.productId", model: productModel })
+        return res.status(200).json({
+            message: "Carrito devuelto correctamente",
+            cart: cartPopulate
+        });
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
+        return res.status(500).json({
+            message: "Hubo un error en el servidor",
+            error: error.message
+        })
     }
 }
 
 export const updateCartProducts = async (req, res) => {
-    if (req.session.login) {
-        const idCart = req.session.user.idCart;
-        const info = req.body;
-        try {
-            await updateCart(idCart, { products: info });
-            const cart = await findCartById(idCart)
-            req.logger.info("Cart updated");
-            return res.status(200).json({
-                message: "Carrito actualizado",
-                cart: await cart.populate({ path: "products.productId", model: productModel })
-            });
-
-        } catch (error) {
-            req.logger.fatal("Fatal error/Server connection");
-            res.status(500).json({
-                message: "Hubo un error en el servidor", 
-                error: error.message
-            });
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    const info = req.body
+    try {
+        console.log(info)
+        for (const product of info) {
+            if (!isValidObjectId(product.productId)) {
+                return res.status(404).json({
+                    message: "The ID Needs to be in mongodb ObjectId format",
+                    productId: product.productId
+                })
+            }
+            const product2 = await productModel.findById(product.productId)
+            console.log(product2)
+            if (!product2) {
+                return res.status(404).json({
+                    message: "Product not found",
+                    productId: product.productId
+                })
+            }
         }
 
-    } else {
-        req.logger.error("Session not found");
-        return res.status(401).json({ message: "No existe sesión activa" });
+        // productModel.findById(product)
+        await updateCart(idCart, { products: info });
+        const cart = await findCartById(idCart)
+        req.logger.info("Cart updated");
+        return res.status(200).json({
+            message: "Carrito actualizado",
+            cart: await cart.populate({ path: "products.productId", model: productModel })
+        });
+
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection");
+        res.status(500).json({
+            message: "Hubo un error en el servidor",
+            error: error.message
+        });
     }
+    //SIN JWT
+    // const idCart = req.session.user.idCart;
+    // const info = req.body;
+    // try {
+    //     await updateCart(idCart, { products: info });
+    //     const cart = await findCartById(idCart)
+    //     req.logger.info("Cart updated");
+    //     return res.status(200).json({
+    //         message: "Carrito actualizado",
+    //         cart: await cart.populate({ path: "products.productId", model: productModel })
+    //     });
+
+    // } catch (error) {
+    //     req.logger.fatal("Fatal error/Server connection");
+    //     res.status(500).json({
+    //         message: "Hubo un error en el servidor",
+    //         error: error.message
+    //     });
+    // }
+
+
 }
 
 
 export const addProductToCart = async (req, res, next) => {
-    if (req.session.login) {
-        const idCart = req.session.user.idCart;
-        const idProduct = req.params.pid;
-        const productoExiste = await findProductById(idProduct)
-        try {
-            if (!productoExiste) 
-            {
-                throw CustomError.createError({ //Sin el throw funciona también
-                    name: "Add Product Error",
-                    message: "Missing Product",
-                    cause: generateAddProductToCartErrorInfo(idProduct),
-                    code: ErrorEnum.MISSING_FIELDS
-                });
-            }else{
-                try {
-                    const realProduct = await findProductById(idProduct);
-                    if (realProduct) {
-                        const cart = await findCartById(idCart);
-                        const productIndex = cart.products.findIndex(product => product.productId == idProduct);
-                        if (productIndex === -1) {
-                            cart.products.push({ productId: idProduct });
-                        } else {
-                            cart.products[productIndex].quantity += 1;
-                        }
-        
-                        await cart.save();
-                        req.logger.info("New Product in the cart, id:"+idProduct)
-                        return res.status(200).json({
-                            message:"Producto agregado al carrito",
-                            cart: await cart.populate({ path: "products.productId", model: productModel })
 
-                        })
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    const idProduct = req.params.pid;
+    if (!isValidObjectId(idProduct)) {
+        return res.status(400).json({ message: "The ID Needs to be in mongodb ObjectId format" })
+    }
+    const productoExiste = await findProductById(idProduct)
+    try {
+        if (!productoExiste) {
+            throw CustomError.createError({ //Sin el throw funciona también
+                name: "Add Product Error",
+                message: "Missing Product",
+                cause: generateAddProductToCartErrorInfo(idProduct),
+                code: ErrorEnum.MISSING_FIELDS
+            });
+        } else {
+            try {
+                const realProduct = await findProductById(idProduct);
+                if (realProduct) {
+                    const cart = await findCartById(idCart);
+                    const productIndex = cart.products.findIndex(product => product.productId == idProduct);
+                    if (productIndex === -1) {
+                        cart.products.push({ productId: idProduct });
+                    } else {
+                        cart.products[productIndex].quantity += 1;
                     }
-        
-                } catch (error) {
-                    req.logger.fatal("Fatal error/Server connection")
-                    res.status(500).send({
-                        message: "Hubo un error en el servidor", 
-                        error: error.message
+
+                    await cart.save();
+                    req.logger.info("New Product in the cart, id:" + idProduct)
+                    return res.status(200).json({
+                        message: "Producto agregado al carrito",
+                        cart: await cart.populate({ path: "products.productId", model: productModel })
+
                     })
                 }
-            }
-        } catch (error) {
-            next(error);
-        }
-       
 
-    } else {
-        return res.status(401).send("No existe sesion activa")
+            } catch (error) {
+                req.logger.fatal("Fatal error/Server connection")
+                res.status(500).send({
+                    message: "Hubo un error en el servidor",
+                    error: error.message
+                })
+            }
+        }
+    } catch (error) {
+        next(error);
     }
 }
 
 export const updateProductQuantity = async (req, res) => {
-    if (req.session.login) {
-        const { quantity } = req.body;
 
-        const idCart = req.session.user.idCart;
-        const idProduct = req.params.pid;
-        const newQuantity = parseInt(quantity);
+    const { quantity } = req.body;
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    //const idCart = req.session.user.idCart; //Si se desea volver a sessions sin jwt, se debe cambiar las lineas de arriba por esta
 
-        try {
-            const cart = await findCartById(idCart);
-            const productIndex = cart.products.findIndex(product => product.productId.equals(idProduct));
+    const idProduct = req.params.pid;
+    if (!isValidObjectId(idProduct)) {
+        return res.status(400).json({ message: "Needs to be in mongodb ObjectId format" })
+    }
+    const newQuantity = parseInt(quantity);
 
-            if (productIndex === -1) {
-                throw new Error('El producto no existe en el carrito.');
-            }
+    try {
+        const cart = await findCartById(idCart);
+        const productIndex = cart.products.findIndex(product => product.productId.equals(idProduct));
 
-            cart.products[productIndex].quantity = newQuantity;
-            await cart.save();
-            return res.status(200).json({
-                message:"Cantidad del producto actualizada",
-                cart: await cart.populate({ path: "products.productId", model: productModel })
-            })
-
-        } catch (error) {
-            req.logger.fatal("Fatal error/Server connection")
-            res.status(500).send({
-                message: "Hubo un error en el servidor", 
-                error: error.message
-            })
+        if (productIndex === -1) {
+            throw new Error('El producto no existe en el carrito.');
         }
+        const dbProduct = await productModel.findById(idProduct)
+        if (dbProduct.stock < newQuantity) {
+            return res.status(400).json({ message: "Not enough stock" })
+        }
+        cart.products[productIndex].quantity = newQuantity;
+        await cart.save();
+        return res.status(200).json({
+            message: "Cantidad del producto actualizada",
+            cart: await cart.populate({ path: "products.productId", model: productModel })
+        })
 
-    } else {
-        return res.status(401).send("No existe sesion activa")
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
+        res.status(500).send({
+            message: "Hubo un error en el servidor",
+            error: error.message
+        })
     }
 }
 
 export const deleteAllProductsFromCart = async (req, res) => {
-    if (req.session.login) {
-        const idCart = req.session.user.idCart;
 
-        try {
-            await updateCart(idCart, { products: [] });
-            return res.status(200).json({message:"Productos borrados"})
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
 
-        } catch (error) {
-            req.logger.fatal("Fatal error/Server connection")
-            res.status(500).send({
-                message: "Hubo un error en el servidor", 
-                error: error.message
-            })
-        }
+    try {
+        await updateCart(idCart, { products: [] });
+        return res.status(200).json({ message: "Productos borrados" })
 
-    } else {
-        return res.status(401).send("No existe sesion activa")
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
+        res.status(500).send({
+            message: "Hubo un error en el servidor",
+            error: error.message
+        })
     }
 }
 
 export const deleteOneProductFromCart = async (req, res) => {
-    if (req.session.login) {
-        const idCart = req.session.user.idCart;
-        const idProduct = req.params.pid;
+    const cookie = req.cookies['userCookie']
+    if (!cookie) {
+        return res.status(404).json({ message: "Logued user not found" })
+    }
+    const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+    const idCart = loguedUser.idCart;
+    const idProduct = req.params.pid;
+    if (!isValidObjectId(idProduct)) {
+        return res.status(400).json({ message: "Needs to be in mongodb ObjectId format" })
+    }
+    try {
+        const cart = await findCartById(idCart);
+        const productIndex = cart.products.findIndex(product => product.productId.equals(idProduct));
 
-        try {
-            const cart = await findCartById(idCart);
-            const productIndex = cart.products.findIndex(product => product.productId.equals(idProduct));
-
-            if (productIndex === -1) {
-                throw new Error('El producto no existe en el carrito.');
-            }
-
-            cart.products.splice(productIndex, 1);
-            await cart.save();
-            return res.status(200).json({
-                message:"El producto ha sido eliminado del carrito",
-                cart: await cart.populate({ path: "products.productId", model: productModel })
-            })
-
-
-        } catch (error) {
-            req.logger.fatal("Fatal error/Server connection")
-            res.status(500).send({
-                message: "Hubo un error en el servidor", 
-                error: error.message
-            })
+        if (productIndex === -1) {
+            throw new Error('El producto no existe en el carrito.');
         }
 
-    } else {
-        return res.status(401).send("No existe sesion activa")
+        cart.products.splice(productIndex, 1);
+        await cart.save();
+        return res.status(200).json({
+            message: "El producto ha sido eliminado del carrito",
+            cart: await cart.populate({ path: "products.productId", model: productModel })
+        })
+
+
+    } catch (error) {
+        req.logger.fatal("Fatal error/Server connection")
+        res.status(500).send({
+            message: "Fatal error/Server connection",
+            error: error.message
+        })
     }
+
+
 }
