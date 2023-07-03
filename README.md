@@ -10,6 +10,13 @@ npm i
 # Rutas de la API a testear
 
 ## 👇👇NUEVA👇👇
+```
+http://localhost:4000/user/documents [POST] [ADMIN USER]
+
+```
+
+
+
 ### Handlebars (Ya que con react no vimos como guardar cookies)
 ### VISTAS
 ```

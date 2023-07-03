@@ -60,6 +60,10 @@ const userSchema = new Schema({
             }
         }],
         default: []
+    },
+    hasDocuments:{
+        type:Boolean,
+        default:false
     }
 })
 
