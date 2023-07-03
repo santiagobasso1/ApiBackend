@@ -1,5 +1,5 @@
 # 👋 Cuarta practica integradora, Multer 
-_Implementación de unit testing, con supertest, mocha y chai_
+_Implementación de multer para guardar imagenes de manera local en public/img_
 _Para esta entrega no fueron utilizadas las vistas_
 ## Pre Requirements 📋
 
