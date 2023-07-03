@@ -11,24 +11,22 @@ export const initializePassport = () => {
 
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
-            const { first_name, last_name, email, age } = req.body;
-
-
+            const { first_name, last_name, email, birthDate } = req.body;
             try {
                 const user = await findUserByEmail(username)
                 if (user) {
                     return done(null, false);
                 }
+          
                 const cart = await createCart();
                 const hashPassword = createHash(password);
                 const newUser = await createUser({
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
-                    age: age,
-                    rol: "Usuario",
+                    birthDate: birthDate,
                     password: hashPassword,
-                    idCart: cart._id
+                    idCart: cart._id,
                 })
                 req.logger.info("New user created: "+newUser)
                 // console.log(newUser)
@@ -49,6 +47,7 @@ export const initializePassport = () => {
             if (validatePassword(password, user.password)) {
                 return done(null, user);
             }
+
             return done(null, false);
         } catch (error) {
             return done(error);

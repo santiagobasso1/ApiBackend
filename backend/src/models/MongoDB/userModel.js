@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, now } from "mongoose";
 
 const userSchema = new Schema({
     first_name: {
@@ -15,13 +15,14 @@ const userSchema = new Schema({
         index: true,
         required: true
     },
-    age: {
-        type: Number,
+    birthDate: {
+        type: Date,
         required: true
     },
     rol: {
         type: String,
-        required: true
+        required: true,
+        default: "User"
     },
     password: {
         type: String,
@@ -32,17 +33,34 @@ const userSchema = new Schema({
         ref: 'Carts',
         required: true
     },
+    lastConnection: {
+        type: Date,
+        default: Date.now
+    },
     resetToken: {
         token: {
-          type: String,
-          default: '',
+            type: String,
+            default: '',
         },
         createdAt: {
-          type: Date,
-          required: true,
-          default: Date.now
+            type: Date,
+            required: true,
+            default: Date.now
         }
-      }
+    },
+    documents: {
+        type: [{
+            name: {
+                type: String,
+                required: true
+            },
+            reference: {
+                type: String,
+                required: true
+            }
+        }],
+        default: []
+    }
 })
 
 const userModel = model("Users", userSchema)

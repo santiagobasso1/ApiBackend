@@ -21,6 +21,9 @@ import swaggerUiExpress from 'swagger-ui-express'
 
 
 
+
+
+
 const whiteList = ['http://localhost:3000'] //Rutas validas a mi servidor
 //CORS (Me da problemas por eso comentado)
 const corsOptions = {
@@ -50,8 +53,9 @@ app.set("views", path.resolve(__dirname, "./views"));
 //MIDDLEWARES
 app.use(cookieParser(process.env.SIGNED_COOKIE))
 app.use(express.json())
-//app.use(cors(corsOptions)) //Deshabilito cors para poder usar postman
+app.use(cors(corsOptions)) //Deshabilito cors para poder usar postman
 app.use(express.urlencoded({ extended: true }))
+
 app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGODBURL,

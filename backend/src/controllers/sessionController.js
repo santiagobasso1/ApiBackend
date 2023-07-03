@@ -1,5 +1,5 @@
 import 'dotenv/config.js'
-import { createUser, findUserByEmail, updateUser } from "../services/UserService.js";
+import { createUser, findUserByEmail, findUserById, updateUser } from "../services/UserService.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import { validatePassword, createHash } from "../utils/bcrypt.js";
@@ -7,10 +7,11 @@ import { CustomError } from "../utils/errors/customErrors.js";
 import { ErrorEnum } from "../utils/errors/errorEnum.js";
 import crypto from 'crypto'
 import { transporter } from "../utils/email.js";
+import userModel from '../models/MongoDB/userModel.js';
 
 export const loginUser = async (req, res, next) => {
     try {
-        passport.authenticate('login', (err, user) => {
+        passport.authenticate('login', async (err, user) => {
             if (err) {
                 return res.status(401).send({
                     message: "Ha ocurrido un error durante el login",
@@ -24,7 +25,9 @@ export const loginUser = async (req, res, next) => {
                 })
             }
             const token = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "1h" });
-            console.log(token);
+            user.lastConnection = Date.now();
+            await user.save();
+            // console.log(token);
             res.cookie('userCookie', token, { maxAge: 3600000 }).send({
                 status: "success",
                 message: "Logged in"
@@ -124,19 +127,25 @@ export const registerUser = async (req, res, next) => {
 export const destroySession = async (req, res) => {
     //CON JWT
     try {
-        const cookie = req.cookies['userCookie']
-        if (cookie){
-            res.clearCookie('userCookie')
-            res.status(200).json({message:"See you next time"})
-        }else{
-            res.status(404).json({message:"Session not found"});
+        const cookie = req.cookies['userCookie'];
+        if (cookie) {
+            const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
+            console.log(loguedUser)
+            const user = await findUserById(loguedUser._id)
+            user.lastConnection = Date.now()
+            await user.save()
+            res.clearCookie('userCookie');
+            res.status(200).json({ message: "See you next time" });
+        } else {
+            res.status(404).json({ message: "Session not found" });
         }
     } catch (error) {
         res.status(500).send({
             message: "Hubo un error en el servidor",
             error: error.message
-        })
+        });
     }
+
     //SIN JWT
     // try {
     //     if (req.session.login) {
