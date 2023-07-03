@@ -1,4 +1,4 @@
-# 👋 Módulos de testing para el Proyecto Final
+# 👋 Cuarta practica integradora, Multer 
 _Implementación de unit testing, con supertest, mocha y chai_
 _Para esta entrega no fueron utilizadas las vistas_
 ## Pre Requirements 📋
