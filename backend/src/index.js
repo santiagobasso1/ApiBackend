@@ -53,7 +53,7 @@ app.set("views", path.resolve(__dirname, "./views"));
 //MIDDLEWARES
 app.use(cookieParser(process.env.SIGNED_COOKIE))
 app.use(express.json())
-app.use(cors(corsOptions)) //Deshabilito cors para poder usar postman
+//app.use(cors(corsOptions)) //Deshabilito cors para poder usar postman
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({

@@ -6,13 +6,13 @@ btnLogin.addEventListener('click', async (e) => {
         
         const first_name = document.getElementById("first_name").value;
         const last_name = document.getElementById("last_name").value;
-        const age = document.getElementById("age").value;
+        const birthDate = document.getElementById("birth_date").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         
 
 
-        const cliente = { first_name, last_name, age, email, password };
+        const cliente = { first_name, last_name, birthDate, email, password };
         const response = await fetch('http://localhost:4000/auth/register', {
             method: 'POST',
             headers: {
