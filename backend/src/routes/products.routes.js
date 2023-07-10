@@ -5,7 +5,7 @@ import { roleVerification } from "../utils/errorMessages.js";
 const routerProduct = Router();
 
 
-routerProduct.get('/',roleVerification(["Usuario"]), getProducts); 
+routerProduct.get('/',roleVerification(["user"]), getProducts); 
 routerProduct.get('/:pid', getProduct);
 routerProduct.post('/', addProducts);
 routerProduct.put('/:pid', updateProduct);

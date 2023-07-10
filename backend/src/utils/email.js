@@ -13,7 +13,7 @@ export const transporter = nodemailer.createTransport({ //Genero la forma de env
 
 
 export const sendEmail = async (req, res) => {
-    try{
+    try {
         await transporter.sendMail({
             from: 'Test Coder santiagobasso@hotmail.com',
             to: req.session.user.email,
@@ -25,12 +25,32 @@ export const sendEmail = async (req, res) => {
             `,
             attachments: []
         })
-        res.status(200).send({message:"Email enviado"})
-    }catch(error){
+        res.status(200).send({ message: "Email enviado" })
+    } catch (error) {
         res.status(400).send({
             message: "Problema con el email que envia",
             error: error
         })
     }
+
+}
+
+
+
+export const sendDeleteNotification = async (user) => {
+    console.log(user.email)
+    await transporter.sendMail({
+        from: 'Santiago Basso',
+        to: user.email,
+        subject: "Account notification email",
+        html: `
+                <div>
+                    <h2>Su cuenta fue eliminada por inactividad</h2>
+                </div>
+            `,
+        attachments: []
+    })
+    return "Email sent"
+
 
 }

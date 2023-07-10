@@ -10,6 +10,28 @@ export const findUsers = async () => {
     }
 }
 
+export const delUserById = async (id) => {
+
+    try {
+        const users = await userModel.findByIdAndRemove(id)
+        return users
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+
+export const findUsersForContact = async () => {
+
+    try {
+        const users = await userModel.find()
+        return users.map(user => ({ nombre: user.first_name, apellido: user.last_name, email:user.email, role:user.rol }))
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+
 export const findUserById = async (id) => {
     try {
         const user = await userModel.findById(id)

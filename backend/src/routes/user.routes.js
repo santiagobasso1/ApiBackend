@@ -1,6 +1,6 @@
 
 import { Router } from 'express'
-import { getUsers } from "../controllers/userController.js";
+import { getAndDeleteInactiveUsers, getUserForContact, getUsers } from "../controllers/userController.js";
 import { associateDocumentsToUser, getUserDocumentsLink, upload } from '../middleware/multer.js';
 
 
@@ -8,8 +8,10 @@ import { associateDocumentsToUser, getUserDocumentsLink, upload } from '../middl
 
 const routerUsers = Router()
 
-routerUsers.get('/', getUsers)
+//routerUsers.get('/',getUsers)
 routerUsers.post('/documents',upload.any(),associateDocumentsToUser)
 routerUsers.get('/documents',getUserDocumentsLink)
+routerUsers.get('/',getUserForContact)
+routerUsers.delete('/',getAndDeleteInactiveUsers) //ADMIN
 
 export default routerUsers
