@@ -237,7 +237,7 @@ export const deleteOneProductFromCart = async (req, res) => {
         const productIndex = cart.products.findIndex(product => product.productId.equals(idProduct));
 
         if (productIndex === -1) {
-            throw new Error('El producto no existe en el carrito.');
+            throw new Error('Product not found in the cart');
         }
 
         cart.products.splice(productIndex, 1);

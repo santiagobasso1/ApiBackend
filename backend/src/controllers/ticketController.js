@@ -43,7 +43,7 @@ export const generateTicketAndSave = async (req, res) => {
         const ticket = await createTicket({
             code: nextCode,
             amount: amount,
-            buyerEmail: req.session.user.email
+            buyerEmail: loguedUser.email
             // purchase_dateTime: time 
         });
         cart.products = [];

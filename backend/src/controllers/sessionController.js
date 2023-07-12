@@ -132,6 +132,7 @@ export const destroySession = async (req, res) => {
             const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
             console.log(loguedUser)
             const user = await findUserById(loguedUser._id)
+            console.log(user)
             user.lastConnection = Date.now()
             await user.save()
             res.clearCookie('userCookie');

@@ -1,5 +1,6 @@
 import passport from "passport"
 import jwt from "jsonwebtoken"
+import { findUserById } from "../services/UserService.js"
 
 export const passportError = (strategy) => {
     return async (req, res, next) => {
@@ -30,9 +31,10 @@ export const roleVerification = (roles) => {
                 return res.status(401).json({ error: "Logued user not found" })
             }
             const loguedUser = jwt.verify(cookie,process.env.JWT_SECRET).user;
+            const dbUser = await findUserById(loguedUser._id)
             let allowed = false
             roles.forEach(rol => {
-                if (rol.toUpperCase() === loguedUser.rol.toUpperCase()){
+                if (rol.toUpperCase() === dbUser.rol.toUpperCase()){
                     req.logger.info("User Allowed")
                     allowed = true
                 }

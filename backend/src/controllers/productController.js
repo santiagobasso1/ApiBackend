@@ -14,11 +14,13 @@ export const getProducts = async (req, res, next) => {
         page: parseInt(page),
         limit: parseInt(limit),
     };
+    //EL SORT ES POR PRECIO, cambiar Price por "title" en caso de querer por titulo
     if (sort) options.sort = { price: sort === 'desc' ? -1 : 1 }
 
     try {
+        
         const products = await paginateProducts(filters, options);
-
+        console.log(options)
         const prevLink = products.hasPrevPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.prevPage}` : null
         const nextLink = products.hasNextPage ? `/api/products?category=${category}&limit=${limit}&sort=${sort}&page=${products.nextPage}` : null
 
@@ -64,7 +66,7 @@ export const addProducts = async (req, res, next) => {
     // const user = await getSessionObject(req,res);
     const info = req.body;
     try {
-        if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category || !info.thumbnails) 
+        if (!info.title || !info.description || !info.code || !info.price || !info.stock || !info.category) 
         {
             CustomError.createError({
                 name: "Add products error",
@@ -76,7 +78,6 @@ export const addProducts = async (req, res, next) => {
                     price: info.price,
                     stock: info.stock,
                     category: info.category,
-                    thumbnails: info.thumbnails,
                 }),
                 code: ErrorEnum.MISSING_FIELDS
             })

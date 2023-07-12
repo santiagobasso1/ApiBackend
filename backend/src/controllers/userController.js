@@ -32,19 +32,23 @@ export const getAndDeleteInactiveUsers = async (req,res) => {
         if (users.length===0){
             return res.status(404).json({message:"Users not found"})
         }
+        let algunBorrado=false;
         for (const user of users) {
             const lastConnection = user.lastConnection;
             const currentDate = new Date();
             const millisecondsPerDay = 24 * 60 * 60 * 1000; // Cantidad de milisegundos en un día
             const daysSinceLastConnection = Math.floor((currentDate - lastConnection) / millisecondsPerDay);
-            if (daysSinceLastConnection >= 0) {
+            if (daysSinceLastConnection >= 2) {
+                algunBorrado = true;
                 await delUserById(user._id)
+                console.log(await sendDeleteNotification(user))
             }
-            console.log(await sendDeleteNotification(user))
-            console.log(daysSinceLastConnection)
         }
 
-
+        if (!algunBorrado){
+            return res.status(404).json({message:"Inactive users not found"});
+        }
+        
         return res.status(200).json({message:"Inactive users deleted"});
     } catch (error) {
         return res.status(500).json({message:error})

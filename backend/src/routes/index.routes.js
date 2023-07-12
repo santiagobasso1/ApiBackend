@@ -13,12 +13,12 @@ import routerHandlebars from "./handlebars.routes.js";
 
 const routerIndex = Router()
 
-routerIndex.use("/auth", routerSession)
+routerIndex.use("/api/session", routerSession)
 routerIndex.use("/auth", routerGithub) //Para que pueda loguearse con session o con github
-routerIndex.use("/user", routerUsers)
+routerIndex.use("/api/users", routerUsers)
 routerIndex.use("/politicas", routerPoliticas)
-routerIndex.use("/api/product", routerProduct)
-routerIndex.use("/api/cart", routerCarts)
+routerIndex.use("/api/products", routerProduct)
+routerIndex.use("/api/carts", routerCarts)
 routerIndex.use("/utils", routerUtils)
 routerIndex.use("/socket", routerSocket)
 routerIndex.use("/mocking", routerMocking)

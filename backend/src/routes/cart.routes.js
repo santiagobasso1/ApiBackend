@@ -5,11 +5,11 @@ import { roleVerification } from "../utils/errorMessages.js";
 const routerCarts = Router();
 
 
-routerCarts.get('/',roleVerification(["Admin","Usuario"]), getCart); //El admin puede verlo pero no modificarlo
-routerCarts.put('/',roleVerification(["Usuario"]), updateCartProducts); //Solo el usuario puede manejar su cart
-routerCarts.post('/product/:pid',roleVerification(["Usuario"]), addProductToCart); 
-routerCarts.put('/product/:pid',roleVerification(["Usuario"]), updateProductQuantity);
-routerCarts.delete('/',roleVerification(["Usuario"]), deleteAllProductsFromCart);
-routerCarts.delete('/product/:pid',roleVerification(["Usuario"]), deleteOneProductFromCart);
-routerCarts.post('/purchase',roleVerification(["Usuario"]), generateTicketAndSave)
+routerCarts.get('/',roleVerification(["User"]), getCart); //El admin puede verlo pero no modificarlo
+routerCarts.put('/',roleVerification(["User"]), updateCartProducts); //Solo el User puede manejar su cart
+routerCarts.post('/product/:pid',roleVerification(["User"]), addProductToCart); 
+routerCarts.put('/product/:pid',roleVerification(["User"]), updateProductQuantity);
+routerCarts.delete('/',roleVerification(["User"]), deleteAllProductsFromCart);
+routerCarts.delete('/product/:pid',roleVerification(["User"]), deleteOneProductFromCart);
+routerCarts.post('/purchase',roleVerification(["User"]), generateTicketAndSave)
 export default routerCarts
