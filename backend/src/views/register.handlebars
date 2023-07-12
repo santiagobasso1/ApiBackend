@@ -11,16 +11,16 @@
 
 <body>
     <div>
-        <form class="loginForm">
+        <form id="registerFormId" class="loginForm">
             <!-- First_Name -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example2">First Name</label>
-                <input type="text" id="first_name" class="form-control inputLogin" />
+                <input type="text" id="first_name" class="form-control inputLogin" required/>
             </div>
             <!-- Last_Name -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example2">Last Name</label>
-                <input type="text" id="last_name" class="form-control inputLogin" />
+                <input type="text" id="last_name" class="form-control inputLogin" required/>
             </div>
             <!-- Birth Date -->
             <div class="form-outline mb-4">
@@ -30,17 +30,17 @@
             <!-- Email input -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example1">Email address</label>
-                <input type="email" id="email" class="form-control inputLogin" />
+                <input type="email" id="email" class="form-control inputLogin" required/>
             </div>
 
             <!-- Password input -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example2">Password</label>
-                <input type="password" id="password" class="form-control inputLogin" />
+                <input type="password" id="password" class="form-control inputLogin" required/>
             </div>
 
             <!-- Submit button -->
-            <button id="btnLogin" type="button" class="btn btn-primary btn-block mb-4">Sign Up</button>
+            <button id="btnLogin" type="submit" class="btn btn-primary btn-block mb-4">Sign Up</button>
 
             <!-- Register buttons -->
             <div class="text-center">

@@ -1,12 +1,13 @@
-const btnLogin = document.getElementById("btnLogin");
-btnLogin.addEventListener('click', async (e) => {
+const url = "http://localhost:4000"
+
+const loginForm = document.getElementById("loginFormId");
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById("email").value;
     try {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const cliente = { email, password };
-        const response = await fetch('http://localhost:4000/auth/login', {
+        const response = await fetch(`${url}/api/session/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,20 +15,28 @@ btnLogin.addEventListener('click', async (e) => {
             body: JSON.stringify(cliente)
         });
 
+        const responseBody = await response.json();
+        
+        const responseMessage = responseBody.message;
         if (!response.ok) {
-            throw new Error('Error en la solicitud');
+            return Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: `Error: ${responseMessage}`,
+                showConfirmButton: false,
+                timer: 1500
+            })    
         }
 
-        const data = await response.json();
         if (response.ok) {
             Swal.fire({
                 position: 'top-end',
                 icon: 'success',
-                title: 'Logueado correctamente!',
+                title: responseMessage,
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                window.location.href = 'http://localhost:4000/handlebars';
+                window.location.href = `${url}/handlebars`;
             });
         }
     } catch (error) {

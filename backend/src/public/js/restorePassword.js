@@ -1,43 +1,45 @@
+const url = "http://localhost:4000"
+
 const restorePasswordForm = document.getElementById("restorePassword");
 
 restorePasswordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const password = document.getElementById("password1").value;
   const passwordVerification = document.getElementById("password2").value;
-
   if (password === passwordVerification) {
     try {
-      const url = 'http://localhost:4000/auth/password/reset';
+      const restoreLink = `${url}/api/session/password/reset`;
 
-      const response = await fetch(url, {
+      const response = await fetch(restoreLink, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ password: password, confirmPassword: password }),
       });
-
+      console.log(response)
+      const responseBody = await response.json();
+      
+      const responseMessage = responseBody.message;
       if (response.ok) {
-        const responseData = await response.json();
         Swal.fire({
           position: 'top-end',
           icon: 'success',
-          title: 'Password Updated',
+          title: responseMessage,
           showConfirmButton: false,
           timer: 1500
         }).then(() => {
-          window.location.href = 'http://localhost:4000/handlebars/login';
+          window.location.href = `${url}/handlebars/login`;
         });
       } else {
-        const errorData = await response.json();
         Swal.fire({
           position: 'top-end',
           icon: 'error',
-          title: errorData.message,
+          title: responseMessage,
           showConfirmButton: false,
           timer: 1500
         }).then(()=>{
-          window.location.href = 'http://localhost:4000/handlebars/emailForm';
+          window.location.href = `${url}/handlebars/emailForm`;
         })
       }
     } catch (error) {

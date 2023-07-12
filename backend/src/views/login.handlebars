@@ -11,17 +11,17 @@
 
 <body>
     <div>
-        <form class="loginForm">
+        <form id="loginFormId" class="loginForm">
             <!-- Email input -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example1">Email address</label>
-                <input  type="email" id="email" class="form-control inputLogin" />
+                <input  type="email" id="email" class="form-control inputLogin" required/>
             </div>
 
             <!-- Password input -->
             <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example2">Password</label>
-                <input  type="password" id="password" class="form-control inputLogin" />
+                <input  type="password" id="password" class="form-control inputLogin" required/>
             </div>
 
             <div class="row mb-4">
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Submit button -->
-            <button id="btnLogin" type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+            <button id="btnLogin" type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
 
             <!-- Register buttons -->
             <div class="text-center">
