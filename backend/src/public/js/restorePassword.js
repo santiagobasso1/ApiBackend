@@ -3,6 +3,7 @@ const restorePasswordForm = document.getElementById("restorePassword");
 
 restorePasswordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const password = document.getElementById("password1").value;
   const passwordVerification = document.getElementById("password2").value;
   if (password === passwordVerification) {

@@ -233,11 +233,10 @@ export const sendResetPasswordLink = async (req, res) => {
         const user = await findUserByEmail(email)
         if (!user) {
             return res.status(404).send({ message: 'Email not found in database' })
-
         }
         if (user) {
             const resetLink = await generatePasswordResetLink(user, req, res)
-
+            
             const mailToSend = {
                 from: 'no-reply',
                 to: email,
@@ -334,7 +333,9 @@ async function generatePasswordResetLink(user, req, res) {
         signed: true,
         maxAge: 1000 * 60 * 60
     })
-    const link = `${url}/handlebars/restorePassword`
+    console.log("link")
+    const link = `${process.env.URL_REQUESTS_HBS}/handlebars/restorePassword`
+    
     return link
 }
 
