@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "node src/index.js",
+    "start": "node src/index.js",
     "dev": "copy .env.development .env && nodemon src/index.js",
     "prod": "copy .env.production .env && nodemon src/index.js",
     "testserver": "copy .env.test .env && nodemon src/index.js",
