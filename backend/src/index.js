@@ -117,6 +117,8 @@ export const io = new Server(server, {
     },
 });
 
+
+
 //Configuración SWAGGER
 const swaggerOptions = {
     definition:{

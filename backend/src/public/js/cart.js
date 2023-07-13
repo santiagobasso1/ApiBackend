@@ -9,7 +9,19 @@ const getCart = async () => {
     });
 
     const cart = await response.json();
+    if (!response.ok) {
+        return Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `${cart.message}`,
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => {
+            window.location.href = `${url}/handlebars/login`;
+        })
+    }
     const cartProducts = cart.cart.products;
+
 
     const cartItemsContainer = document.getElementById('cartList')
     var children = cartItemsContainer.childNodes;
@@ -38,7 +50,12 @@ const getCart = async () => {
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-3">
                         <p class="lead fw-normal mb-2">${productPopulate.title}</p>
-                        <p><span class="text-muted">Quantity:${product.quantity} </span>  <span class="text-muted">Price:${productPopulate.price} </span></p>
+                        <div class="d-flex align-items-center">
+                            <button id="restarQuantity${productPopulate._id}" class="btn btn-secondary btn-sm me-2">-</button>
+                            <span class="text-muted">${product.quantity}</span>
+                            <button id="sumarQuantity${productPopulate._id}" class="btn btn-secondary btn-sm ms-2">+</button>
+                        </div>
+                        <p class="text-muted">Price: ${productPopulate.price}</p>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                         <h5 class="mb-0">U$S: ${productPopulate.price * product.quantity}</h5>
@@ -47,10 +64,61 @@ const getCart = async () => {
                         <a id="btnBorrar${productPopulate._id}" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
                     </div>
                 </div>
-            </div>            
+            </div>
             `;
+
+
             item.innerHTML = itemContent;
             cartItemsContainer.appendChild(item)
+
+
+
+            document.getElementById(`sumarQuantity${productPopulate._id}`).addEventListener('click', async () => {
+                const sumarQuantityResponse = await fetch(`${url}/api/carts/product/${productPopulate._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: product.quantity + 1 })
+                });
+                const sumarMessage = await sumarQuantityResponse.json()
+                if (!sumarQuantityResponse.ok) {
+                    return Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: `${sumarMessage.message}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+                getCart()
+            })
+
+
+
+            document.getElementById(`restarQuantity${productPopulate._id}`).addEventListener('click', async () => {
+                const restarQuantityResponse = await fetch(`${url}/api/carts/product/${productPopulate._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: product.quantity - 1 })
+                });
+                const restarMessage = await restarQuantityResponse.json()
+                if (!restarQuantityResponse.ok) {
+                    return Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: `${restarMessage.message}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+                getCart()
+            })
+
+
+
 
             document.getElementById(`btnBorrar${productPopulate._id}`).addEventListener("click", async () => {
                 const deleteProductFromCartResponse = await fetch(`${url}/api/carts/product/${productPopulate._id}`, {
@@ -93,8 +161,8 @@ document.getElementById('checkoutButton').addEventListener('click', async (e) =>
         method: 'POST',
     });
     const checkoutEventResponseJson = await ticketResponse.json()
-  
-    if (!ticketResponse.ok){
+
+    if (!ticketResponse.ok) {
         return Swal.fire({
             position: 'top-end',
             icon: 'error',
@@ -104,11 +172,6 @@ document.getElementById('checkoutButton').addEventListener('click', async (e) =>
         })
     }
 
-    const ticket = checkoutEventResponseJson.ticket
-    const emailResponse = await fetch(`${url}/api/carts/purchase`, {
-        method: 'POST',
-        body: JSON.stringify(ticket)
-    });
     Swal.fire({
         position: 'top-end',
         icon: 'success',

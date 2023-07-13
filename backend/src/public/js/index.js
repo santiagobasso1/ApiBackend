@@ -14,6 +14,9 @@ hrefNavProducts.href = `${url}/handlebars/products`;
 const hrefNavCart = document.getElementById('hrefNavCart')
 hrefNavCart.href = `${url}/handlebars/cart`;
 
+const hrefProfile = document.getElementById('hrefProfile')
+hrefProfile.href = `${url}/handlebars/profile`;
+
 
 
 

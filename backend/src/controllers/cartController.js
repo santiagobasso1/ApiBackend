@@ -183,6 +183,9 @@ export const updateProductQuantity = async (req, res) => {
             throw new Error('El producto no existe en el carrito.');
         }
         const dbProduct = await productModel.findById(idProduct)
+        if (newQuantity < 1 ) {
+            return res.status(400).json({ message: "Quantity must be more than 1" })
+        }
         if (dbProduct.stock < newQuantity) {
             return res.status(400).json({ message: "Not enough stock" })
         }

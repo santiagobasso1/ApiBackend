@@ -18,11 +18,12 @@
     justify-content: center;
     flex-direction: column;
 }
-.prueba{
+.margenBottom{
     margin-bottom: 10%;
 }
 
 .cartButton{
     width: 3rem;
 }
+
 

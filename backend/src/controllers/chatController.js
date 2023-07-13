@@ -11,7 +11,7 @@ export const sendMessage = async (req, res) => {
         });
         const messages = await returnMessages();
 
-        io.emit("mensajes actualizados", messages);
+        io.emit("allMessages", messages);
 
         res.status(200).send({
             message: "Mensaje enviado",
