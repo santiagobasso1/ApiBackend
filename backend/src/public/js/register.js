@@ -1,4 +1,4 @@
-const url = "http://localhost:4000"
+const url = "https://backendcoderhouse.onrender.com"
 
 const registerForm = document.getElementById("registerFormId");
 registerForm.addEventListener('submit', async (e) => {

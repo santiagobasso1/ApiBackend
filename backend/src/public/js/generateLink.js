@@ -1,4 +1,4 @@
-const url = "http://localhost:4000"
+const url = "https://backendcoderhouse.onrender.com"
 const sendMailForm = document.getElementById("sendMailForm")
 sendMailForm.addEventListener('submit', async (e) => {
   e.preventDefault()

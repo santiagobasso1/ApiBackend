@@ -1,4 +1,4 @@
-const url = "http://localhost:4000";
+const url = "https://backendcoderhouse.onrender.com";
 
 const loadProducts = async () => {
     const response = await fetch(`${url}/api/products`, {
