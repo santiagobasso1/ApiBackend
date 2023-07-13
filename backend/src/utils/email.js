@@ -12,25 +12,39 @@ export const transporter = nodemailer.createTransport({ //Genero la forma de env
 })
 
 
-export const sendEmail = async (req, res) => {
+export const sendTicketEmail = async (ticket) => {
     try {
+ /*        let purchaseProductsMessage = ""
+        ticket.products.forEach((product) => {
+            purchaseProductsMessage += `Product: ${product.product}, price: ${product.price}, quantity: ${product.quantity}\n`;
+        }); */
+        const productListHTML = ticket.products .map((product) =>
+                `<li>Product: ${product.product}, price: ${product.price}, quantity: ${product.quantity}</li>` ).join("");
+
         await transporter.sendMail({
             from: 'Test Coder santiagobasso@hotmail.com',
-            to: req.session.user.email,
-            subject: "Sujeto del email",
+            to: ticket.buyerEmail,
+            subject: "El ticket de su compra",
             html: `
                 <div>
-                    <h2>Su Ticket: (No implementado aun)</h2>
+                    <h2>El ticket de su compra</h2>
+                    <p>Id: ${ticket._id}</p>
+                    <p>Code: ${ticket.code}</p>
+                    <p>Amount: ${ticket.amount}</p>
+                    <h3>Products</h3>
+                    <p>${productListHTML}</p>
+                    <h3>Total: $${ticket.total}</h3>
+
                 </div>
             `,
             attachments: []
         })
-        res.status(200).send({ message: "Email enviado" })
+        return {message:"Email sent"}
     } catch (error) {
-        res.status(400).send({
+        return {
             message: "Problema con el email que envia",
             error: error
-        })
+        }
     }
 
 }

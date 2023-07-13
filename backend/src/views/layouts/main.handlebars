@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/lux/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .cart-button {
+            font-size: 24px;
+            padding: 8px;
+        }
+    </style>
 </head>
 
 <body>
@@ -27,8 +34,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="http://localhost:4000/handlebars/register">Register</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="http://localhost:4000/handlebars/products">Products</a>
+                    </li>
                 </ul>
-
+                <a class="nav-link cart-button" href="http://localhost:4000/handlebars/cart">
+                    <img class="cartButton" src="https://i.imgur.com/Lgh4miM.png" alt="">
+                </a>
             </div>
         </div>
     </nav>
@@ -44,7 +56,6 @@
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
-
 </body>
 
 </html>

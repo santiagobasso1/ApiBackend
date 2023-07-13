@@ -28,7 +28,7 @@ export const roleVerification = (roles) => {
             const cookie = req.cookies['userCookie']
             if (!cookie){
                 req.logger.fatal("Logued user not found")
-                return res.status(401).json({ error: "Logued user not found" })
+                return res.status(401).json({ message: "Logued user not found" })
             }
             const loguedUser = jwt.verify(cookie,process.env.JWT_SECRET).user;
             const dbUser = await findUserById(loguedUser._id)

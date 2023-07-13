@@ -2,13 +2,17 @@ import { findCartById, updateCart, createCart } from "../services/cartService.js
 import { findProductById } from "../services/productService.js";
 import { createTicket, returnLastCode } from "../services/ticketService.js";
 import jwt from "jsonwebtoken";
+import { sendTicketEmail } from "../utils/email.js";
 export const generateTicketAndSave = async (req, res) => {
     const cookie = req.cookies['userCookie']
     if (!cookie) {
         return res.status(404).json({ message: "Logued user not found" })
     }
+    const purchaseProducts = [];
+
     const loguedUser = jwt.verify(cookie, process.env.JWT_SECRET).user;
     const idCart = loguedUser.idCart;
+    let totalCompra = 0;
     const cart = await findCartById(idCart)
     if (cart.products.length > 0) {
         let amount = 0;
@@ -16,9 +20,11 @@ export const generateTicketAndSave = async (req, res) => {
         for (const cartProduct of cart.products) {
             const dataBaseProduct = await findProductById(cartProduct.productId)
             if (dataBaseProduct) {
-                if (dataBaseProduct.stock > cartProduct.quantity) {
+                if (dataBaseProduct.stock >= cartProduct.quantity) {
                     amount += cartProduct.quantity;
                     dataBaseProduct.stock -= cartProduct.quantity;
+                    purchaseProducts.push({ id: dataBaseProduct._id, product: dataBaseProduct.title, price: dataBaseProduct.price, quantity: cartProduct.quantity });
+                    totalCompra += dataBaseProduct.price * cartProduct.quantity
                     await dataBaseProduct.save();
                 } else {
                     productosSinStock.push(cartProduct.productId);
@@ -43,25 +49,28 @@ export const generateTicketAndSave = async (req, res) => {
         const ticket = await createTicket({
             code: nextCode,
             amount: amount,
-            buyerEmail: loguedUser.email
+            buyerEmail: loguedUser.email,
+            products: purchaseProducts,
+            total: totalCompra
             // purchase_dateTime: time 
         });
         cart.products = [];
         await cart.save();
+        await sendTicketEmail(ticket)
         if (productosSinStock.length>0){
-            return res.status(200).send({
+            return res.status(200).json({
                 message: "Ticket generado, se vació el carrito, hay productos que no tienen stock", 
                 ticket: ticket,
                 productosSinStock: productosSinStock
             })
         }else{
-            return res.status(200).send({
+            return res.status(200).json({
                 message: "Ticket generado, se vació el carrito", 
                 ticket: ticket
             })
         }
     } else {
-        return res.status(404).send("El carrito está vacio")
+        return res.status(404).json("El carrito está vacio")
     }
 
 }

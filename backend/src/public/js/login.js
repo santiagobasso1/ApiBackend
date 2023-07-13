@@ -36,7 +36,7 @@ loginForm.addEventListener('submit', async (e) => {
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                window.location.href = `${url}/handlebars`;
+                window.location.href = `${url}/handlebars/products`;
             });
         }
     } catch (error) {

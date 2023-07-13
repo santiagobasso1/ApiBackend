@@ -130,7 +130,10 @@ export const addProductToCart = async (req, res, next) => {
                     if (productIndex === -1) {
                         cart.products.push({ productId: idProduct });
                     } else {
-                        cart.products[productIndex].quantity += 1;
+                        if (cart.products[productIndex].quantity+1 > realProduct.stock){
+                            return res.status(400).json({message:"No hay suficiente stock"})
+                        }
+                        cart.products[productIndex].quantity += 1; 
                     }
 
                     await cart.save();
@@ -144,7 +147,7 @@ export const addProductToCart = async (req, res, next) => {
 
             } catch (error) {
                 req.logger.fatal("Fatal error/Server connection")
-                res.status(500).send({
+                return res.status(500).json({
                     message: "Hubo un error en el servidor",
                     error: error.message
                 })
