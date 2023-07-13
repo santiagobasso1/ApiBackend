@@ -334,7 +334,7 @@ async function generatePasswordResetLink(user, req, res) {
         signed: true,
         maxAge: 1000 * 60 * 60
     })
-    const link = `http://localhost:4000/handlebars/restorePassword`
+    const link = `${url}/handlebars/restorePassword`
     return link
 }
 

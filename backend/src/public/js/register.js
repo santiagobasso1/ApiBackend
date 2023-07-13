@@ -1,4 +1,7 @@
-const url = "https://backendcoderhouse.onrender.com"
+
+const hrefLogin = document.getElementById('hrefLogin')
+hrefLogin.href = `${url}/handlebars/login`;
+
 
 const registerForm = document.getElementById("registerFormId");
 registerForm.addEventListener('submit', async (e) => {
@@ -46,7 +49,7 @@ registerForm.addEventListener('submit', async (e) => {
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                window.location.href = 'http://localhost:4000/handlebars/login';
+                window.location.href = `${url}/handlebars/login`;
             });
         }
     } catch (error) {

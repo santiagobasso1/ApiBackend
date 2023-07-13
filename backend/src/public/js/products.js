@@ -1,4 +1,4 @@
-const url = "https://backendcoderhouse.onrender.com";
+
 
 const loadProducts = async () => {
     const response = await fetch(`${url}/api/products`, {
@@ -56,7 +56,7 @@ const loadProducts = async () => {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(()=>{
-                    window.location.href = 'http://localhost:4000/handlebars/login';
+                    window.location.href = `${url}/handlebars/login`;
                 })
             }
             if (!addToCartResponse.ok){

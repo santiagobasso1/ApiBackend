@@ -1,4 +1,10 @@
-const url = "https://backendcoderhouse.onrender.com"
+
+const hrefForgotPassword = document.getElementById('hrefForgotPassword')
+hrefForgotPassword.href = `${url}/handlebars/emailForm`;
+
+const hrefRegister = document.getElementById('hrefRegister')
+hrefRegister.href = `${url}/handlebars/register`;
+
 
 const loginForm = document.getElementById("loginFormId");
 loginForm.addEventListener('submit', async (e) => {
