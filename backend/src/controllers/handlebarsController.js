@@ -68,10 +68,3 @@ export const sendProfileView = async (req, res) => {
 };
 
 
-export const sendChatView = async (req, res) => {
-  try {
-    res.render("chat");
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-};

@@ -216,7 +216,7 @@ export const deleteAllProductsFromCart = async (req, res) => {
 
     try {
         await updateCart(idCart, { products: [] });
-        return res.status(200).json({ message: "Productos borrados" })
+        return res.status(200).json({ message: "All cart products deleted" })
 
     } catch (error) {
         req.logger.fatal("Fatal error/Server connection")

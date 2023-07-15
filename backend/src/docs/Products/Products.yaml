@@ -1,5 +1,5 @@
 paths:
-  /api/product/:
+  /api/products/:
     get:
       summary: "Devuelve todos los productos existentes en la base de datos"
       tags: 
@@ -44,7 +44,7 @@ paths:
 
 
 
-  /api/product/{pid}:
+  /api/products/{pid}:
     get:
       summary: "Devuelve el producto con el id proporcionado"
       tags:
@@ -345,5 +345,5 @@ components:
         page: 2
         hasPrevPage: true
         hasNextPage: true
-        nextLink: "https://localhost:4000/api/product?page=3"
-        prevLink: "https://localhost:4000/api/product?page=1"
+        nextLink: "https://localhost:4000/api/products?page=3"
+        prevLink: "https://localhost:4000/api/products?page=1"

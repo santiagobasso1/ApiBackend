@@ -1,5 +1,5 @@
 paths:
-  /api/cart/:
+  /api/carts/:
     get:
       summary: "Devuelve el carrito de la sesion actual"
       tags:
@@ -54,7 +54,7 @@ paths:
           description: "Usuario no autorizado"
         "500":
           description: "Error fatal al intentar vaciar el carrito"
-  /api/cart/product/{pid}:     
+  /api/carts/product/{pid}:     
     post:
       summary: "Agrega un producto al carrito del usuario que esta logueado"
       tags:

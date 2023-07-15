@@ -15,5 +15,5 @@ routerPoliticas.get("/autenticado", passportError('jwt'), (req, res) => {
 routerPoliticas.get("/premium", passportError('jwt'), roleVerification(["User"]), (req, res) => {
     res.send(req.user)
 })
-//ACTUALMENTE EN DESUSO YA QUE PASSPORTERROR("JWT")
+//ACTUALMENTE EN DESUSO
 export default routerPoliticas
